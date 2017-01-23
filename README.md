@@ -4,7 +4,7 @@
 ## Build excecutable for Linux
 ### Clone repo from GitHub
 ```
-$ git clone https://github.com/walker2/Falcon
+$ git clone https://github.com/walker2/SunflowerSpaniel
 ```
 ### Download and install dependencies
 ```
