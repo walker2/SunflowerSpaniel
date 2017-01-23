@@ -1,7 +1,7 @@
 ## SunflowerSpaniel
 **SunflowerSpaniel** is a project based on [Falcon framework](https://github.com/walker2/Falcon).
 
-## Build excecutable for Linux
+## Build executable for Linux
 ### Clone repo from GitHub
 ```
 $ git clone https://github.com/walker2/SunflowerSpaniel
@@ -13,6 +13,8 @@ $ sudo apt-get install libsdl2-ttf-dev
 $ sudo apt-get install libsdl2-mixer-dev
 $ sudo apt-get install libglew-dev
 $ sudo apt-get install libglm-dev
+$ sudo apt-get install libbox2d-dev
+$ sudo apt-get install libnoise-dev
 ```
 ### Navigate to the cloned folder and run
 ```
