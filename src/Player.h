@@ -21,7 +21,7 @@ public:
 
     void update(Falcon::InputManager& inputManager);
 
-    const Circle& getBox() const { return m_circle; };
+    const Circle& getCircle() const { return m_circle; };
     glm::vec2 getPosition() const
     {
         glm::vec2 pos;

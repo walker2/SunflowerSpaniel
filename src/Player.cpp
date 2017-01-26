@@ -10,7 +10,7 @@ void Player::init(b2World *world, const glm::vec2 position, const glm::vec2 dime
 {
     Falcon::GLTexture texture = Falcon::ResourceManager::getTexture("media/Textures/Wolfpack.png");
 
-    m_circle.init(world, position, dimensions, true);
+    m_circle.init(world, position, dimensions, true, b2_dynamicBody);
 
     m_tileSheet.init(texture, glm::ivec2(texture.width / 32, texture.height / 32));
 }

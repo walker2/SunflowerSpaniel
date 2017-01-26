@@ -31,7 +31,7 @@ set(SOURCE_FILES
         include/ImGUI/imgui_impl_sdl.h
         include/ImGUI/imgui_draw.cpp
         include/ImGUI/imgui_internal.h
-        src/Map.cpp src/Map.h)
+        src/Map.cpp src/Map.h src/Tree.cpp src/Tree.h src/EvergreenTree.cpp src/EvergreenTree.h src/OakTree.cpp src/OakTree.h)
 
 add_executable(SunflowerSpaniel ${SOURCE_FILES})
 include(FindPkgConfig)

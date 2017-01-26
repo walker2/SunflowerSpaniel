@@ -10,7 +10,8 @@
 class Circle
 {
 public:
-    void init(b2World* world, const glm::vec2 position, const glm::vec2 dimensions, bool fixedRotation);
+    void destroy() { if (m_body) m_body->GetWorld()->DestroyBody( m_body ); };
+    void init(b2World* world, const glm::vec2 position, const glm::vec2 dimensions, bool fixedRotation, b2BodyType bodyType);
     void drawDebug(Falcon::DebugRenderer& debugRenderer) const;
 
     b2Body* getBody() const { return m_body; };

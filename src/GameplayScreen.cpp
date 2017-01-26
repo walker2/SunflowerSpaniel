@@ -43,7 +43,7 @@ void GameplayScreen::onEntry()
     m_texture = Falcon::ResourceManager::getTexture("media/Textures/wall_tile.png");
 
     // Make a bunch of boxes
-    std::mt19937 rng;
+    std::mt19937 rng(time(0));
     std::uniform_real_distribution<float> x_dist(-10.0f, 10.0f);
     std::uniform_real_distribution<float> y_dist(-15.0f, 15.0f);
     std::uniform_real_distribution<float> size(1.0f, 4.0f);
@@ -88,7 +88,7 @@ void GameplayScreen::onEntry()
     mouseLight.color = Falcon::Color(0, 0, 0, 128);
     mouseLight.size = 15.0f;
 
-    m_map.init(100, 100, "media/Textures/terrain.png", 32);
+    m_map.init(m_world.get(), 100, 100, "media/Textures/terrain.png", 32);
 }
 
 void GameplayScreen::onExit()
@@ -128,13 +128,13 @@ void GameplayScreen::draw()
     glm::mat4 projectionMatrix = m_camera.getCameraMatrix();
     GLint pUniform = m_shaderProgram.getUniformLocation("P");
     glUniformMatrix4fv(pUniform, 1, GL_FALSE, &projectionMatrix[0][0]);
+
     if (m_map.isGenerated())
     {
-        m_map.draw();
+        m_map.drawBackground();
     }
 
     m_spriteBatch.begin();
-
     for (auto& box : m_boxes)
     {
         box.draw(m_spriteBatch);
@@ -143,14 +143,19 @@ void GameplayScreen::draw()
     m_player.draw(m_spriteBatch);
 
     m_spriteBatch.end();
-
     m_spriteBatch.renderBatch();
+
+    if (m_map.isGenerated())
+    {
+        m_map.drawForeground();
+    }
 
     m_shaderProgram.unuse();
 
     //Debug rendering
     if (m_renderDebug)
     {
+        m_map.drawDebug(m_debugRender);
         for (auto& box : m_boxes)
         {
             box.drawDebug(m_debugRender);

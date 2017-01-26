@@ -1,12 +1,12 @@
 #include "Circle.h"
 
-void Circle::init(b2World *world, const glm::vec2 position, const glm::vec2 dimensions, bool fixedRotation)
+void Circle::init(b2World *world, const glm::vec2 position, const glm::vec2 dimensions, bool fixedRotation, b2BodyType bodyType)
 {
     m_dimensions = dimensions;
 
     // Make the body
     b2BodyDef bodyDef;
-    bodyDef.type = b2_dynamicBody;
+    bodyDef.type = bodyType;
     bodyDef.position.Set(position.x, position.y);
     bodyDef.fixedRotation = fixedRotation;
 
