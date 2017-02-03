@@ -1,0 +1,25 @@
+<Object>
+    <BodyComponent>
+        <Position x="0" y="0"/>
+        <BodyType>Dynamic</BodyType>
+        <FixedRotation>false</FixedRotation>
+        <LinearDamping>2</LinearDamping>
+    </BodyComponent>
+
+    <CollisionComponent>
+        <Dimensions height="2.5" width="2.5"/>
+        <Shape name="Box">
+            <Density>1.0f</Density>
+            <Friction>0.3f</Friction>
+        </Shape>
+    </CollisionComponent>
+
+    <SpriteComponent>
+        <Texture>media/Textures/wall_tile.png</Texture>
+        <Color r="255" g="255" b="255" a="255"/>
+        <Dimensions height="2.5" width="2.5"/>
+        <Position x="0" y="0"/>
+        <SpriteID>0</SpriteID>
+    </SpriteComponent>
+
+</Object>

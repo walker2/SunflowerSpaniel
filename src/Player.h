@@ -16,23 +16,24 @@ public:
 
     void init(b2World *world, const glm::vec2 position, const glm::vec2 dimensions);
 
-    void draw(Falcon::SpriteBatch& spriteBatch);
+    void draw(Falcon::SpriteBatch& spriteBatch, float deltaTime);
     void drawDebug(Falcon::DebugRenderer &debugRenderer);
-
-    void update(Falcon::InputManager& inputManager);
+    void update(Falcon::InputManager& inputManager, float deltaTime);
 
     const Circle& getCircle() const { return m_circle; };
-    glm::vec2 getPosition() const
+    glm::vec2 getPosition()
     {
         glm::vec2 pos;
-        pos.x = m_circle.getBody()->GetPosition().x;
-        pos.y = m_circle.getBody()->GetPosition().y;
+        pos.x = m_circle.getComponent<BodyComponent>()->getBody()->GetPosition().x;
+        pos.y = m_circle.getComponent<BodyComponent>()->getBody()->GetPosition().y;
 
         return pos;
     }
 
 private:
+    float m_animSpeed = 0.0f;
     float m_animTime = 0.0f;
+    float m_speed = 20.0f;
 
     DIRECTION m_direction = DIRECTION::LEFT;
     Falcon::TileSheet m_tileSheet;

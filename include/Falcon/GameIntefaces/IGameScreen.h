@@ -34,8 +34,8 @@ namespace Falcon
         virtual void onExit() = 0;
 
         //Called in the main game loop
-        virtual void update() = 0;
-        virtual void draw() = 0;
+        virtual void update(float deltaTime) = 0;
+        virtual void draw(float deltaTime) = 0;
 
         int getIndex() const { return  m_screenIndex; };
         ScreenState getState() const { return m_currentState; };

@@ -1,8 +1,17 @@
 #include "Circle.h"
+#include "CollisionComponent.h"
+
+
+Circle::Circle()
+{
+    attachComponent<BodyComponent>();
+    attachComponent<CollisionComponent>();
+}
 
 void Circle::init(b2World *world, const glm::vec2 position, const glm::vec2 dimensions, bool fixedRotation, b2BodyType bodyType)
 {
-    m_dimensions = dimensions;
+    auto bodyComponent = getComponent<BodyComponent>();
+    getComponent<CollisionComponent>()->setDimensions(dimensions);
 
     // Make the body
     b2BodyDef bodyDef;
@@ -10,8 +19,8 @@ void Circle::init(b2World *world, const glm::vec2 position, const glm::vec2 dime
     bodyDef.position.Set(position.x, position.y);
     bodyDef.fixedRotation = fixedRotation;
 
-    m_body = world->CreateBody(&bodyDef);
-    m_body->SetLinearDamping(2.0f);
+    bodyComponent->setBody(world->CreateBody(&bodyDef));
+    bodyComponent->getBody()->SetLinearDamping(2.0f);
 
     //Create the circle
     b2CircleShape circleShape;
@@ -21,17 +30,19 @@ void Circle::init(b2World *world, const glm::vec2 position, const glm::vec2 dime
     fixtureDef.shape = &circleShape;
     fixtureDef.density = 1.0f;
     fixtureDef.friction = 0.3f;
-    m_fixture = m_body->CreateFixture(&fixtureDef);
+    bodyComponent->getBody()->CreateFixture(&fixtureDef);
 }
 
-void Circle::drawDebug(Falcon::DebugRenderer &debugRenderer) const
+void Circle::drawDebug(Falcon::DebugRenderer &debugRenderer)
 {
+    auto body = getComponent<BodyComponent>()->getBody();
+    auto dims = getComponent<CollisionComponent>()->getDimensions();
+
     glm::vec4 destRect;
-    destRect.x = m_body->GetPosition().x - m_dimensions.x / 2.0f;
-    destRect.y = m_body->GetPosition().y - m_dimensions.y / 2.0f;
-    destRect.z = m_dimensions.x;
-    destRect.w = m_dimensions.y;
-    //debugRenderer.drawBox(destRect, Falcon::Color(255, 255, 255, 255), m_body->GetAngle());
-    debugRenderer.drawCircle(glm::vec2(destRect.x + m_dimensions.x / 2.0f, destRect.y + m_dimensions.y / 2.0f),
-                             Falcon::Color(255, 255, 255, 255), m_dimensions.x / 2.0f);
+    destRect.x = body->GetPosition().x - dims.x / 2.0f;
+    destRect.y = body->GetPosition().y - dims.y / 2.0f;
+    destRect.z = dims.x;
+    destRect.w = dims.y;
+    debugRenderer.drawCircle(glm::vec2(destRect.x + dims.x / 2.0f, destRect.y + dims.y / 2.0f),
+                             Falcon::Color(255, 255, 255, 255), dims.x / 2.0f);
 }

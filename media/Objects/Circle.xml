@@ -1,0 +1,17 @@
+<Object>
+    <BodyComponent>
+        <Position x="0" y="0"/>
+        <BodyType>Static</BodyType>
+        <FixedRotation>false</FixedRotation>
+        <LinearDamping>2</LinearDamping>
+    </BodyComponent>
+
+    <CollisionComponent>
+        <Dimensions height="2.5" width="2.5"/>
+        <Shape name="Circle">
+            <Density>1.0f</Density>
+            <Friction>0.3f</Friction>
+        </Shape>
+    </CollisionComponent>
+
+</Object>

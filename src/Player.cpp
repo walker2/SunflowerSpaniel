@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Falcon/ResourceManager/ResourceManager.h"
+#include "CollisionComponent.h"
 
 Player::Player()
 {
@@ -8,6 +9,7 @@ Player::Player()
 
 void Player::init(b2World *world, const glm::vec2 position, const glm::vec2 dimensions)
 {
+    m_animSpeed = 0.1;
     Falcon::GLTexture texture = Falcon::ResourceManager::getTexture("media/Textures/Wolfpack.png");
 
     m_circle.init(world, position, dimensions, true, b2_dynamicBody);
@@ -15,17 +17,16 @@ void Player::init(b2World *world, const glm::vec2 position, const glm::vec2 dime
     m_tileSheet.init(texture, glm::ivec2(texture.width / 32, texture.height / 32));
 }
 
-void Player::draw(Falcon::SpriteBatch& spriteBatch)
+void Player::draw(Falcon::SpriteBatch& spriteBatch, float deltaTime)
 {
     glm::vec4 destRect;
-    b2Body* body = m_circle.getBody();
-    int tileIndex;
-    int numTiles = 1;
+    b2Body* body = m_circle.getComponent<BodyComponent>()->getBody();
 
-    float animSpeed = 0.2;
+    int tileIndex;
+    int frameCount;
+
     switch (m_direction)
     {
-
         case DIRECTION::LEFT:
             tileIndex = 56;
             break;
@@ -42,59 +43,69 @@ void Player::draw(Falcon::SpriteBatch& spriteBatch)
 
     if (abs(body->GetLinearVelocity().x) > 1.0f || abs(body->GetLinearVelocity().y) > 1.0f )
     {
-        numTiles = 4;
+        frameCount = 4;
     }
     else
     {
-        numTiles = 1;
+        frameCount = 1;
     }
 
-
     // Increment animation tile
-    m_animTime += animSpeed;
+    m_animTime += m_animSpeed * deltaTime;
 
     // Apply animation
-    tileIndex = tileIndex + (int)m_animTime % numTiles;
+    tileIndex = tileIndex + (int)m_animTime % frameCount;
+    auto dims = m_circle.getComponent<CollisionComponent>()->getDimensions();
 
-    destRect.x = body->GetPosition().x - m_circle.getDimensions().x;
-    destRect.y = body->GetPosition().y - m_circle.getDimensions().y / 2.0f;
-    destRect.z = m_circle.getDimensions().x * 2.0f;
-    destRect.w = m_circle.getDimensions().y * 2.0f;
+    destRect.x = body->GetPosition().x - dims.x;
+    destRect.y = body->GetPosition().y - dims.y / 2.0f;
+    destRect.z = dims.x * 2.0f;
+    destRect.w = dims.y * 2.0f;
     spriteBatch.draw(destRect, m_tileSheet.getUVs(tileIndex), m_tileSheet.texture.id, 0.0f, Falcon::Color(255, 255, 225, 255), body->GetAngle());
 }
 
-void Player::update(Falcon::InputManager &inputManager)
+void Player::update(Falcon::InputManager &inputManager, float deltaTime)
 {
-    b2Body* body = m_circle.getBody();
+    b2Body* body = m_circle.getComponent<BodyComponent>()->getBody();
+    b2Vec2 movementSpeed(0.0f, 0.0f);
+
     if (inputManager.isKeyDown(SDLK_a))
     {
-        body->SetLinearVelocity(b2Vec2(-20.0f, 0.0f));
+        movementSpeed.x += -1;
         m_direction = DIRECTION::LEFT;
+
     }
     else if (inputManager.isKeyDown(SDLK_d))
     {
-        body->SetLinearVelocity(b2Vec2(20.0f, 0.0f));
+        movementSpeed.x += 1;
         m_direction = DIRECTION::RIGHT;
     }
 
     if (inputManager.isKeyDown(SDLK_w))
     {
-        body->SetLinearVelocity(b2Vec2(0.0f, 20.0f));
+        movementSpeed.y += 1;
         m_direction = DIRECTION::UP;
     }
     else if (inputManager.isKeyDown(SDLK_s))
     {
-        body->SetLinearVelocity(b2Vec2(0.0f, -20.0f));
+        movementSpeed.y += -1 ;
         m_direction = DIRECTION::DOWN;
     }
 
+    float length = movementSpeed.Length();
+    if (length != 0)
+    {
+        movementSpeed.x /= length;
+        movementSpeed.y /= length;
+    }
+    movementSpeed *= m_speed * deltaTime;
+    body->SetLinearVelocity(movementSpeed);
     body->SetLinearVelocity(b2Vec2(body->GetLinearVelocity().x * 0.7f,
                                    body->GetLinearVelocity().y * 0.7f));
-
-
 }
 
 void Player::drawDebug(Falcon::DebugRenderer &debugRenderer)
 {
     m_circle.drawDebug(debugRenderer);
 }
+

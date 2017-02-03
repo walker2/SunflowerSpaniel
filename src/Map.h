@@ -10,7 +10,7 @@
 #include "EvergreenTree.h"
 #include "OakTree.h"
 
-enum class BIOME { WATER = 0, BEACH, FOREST, JUNGLE, SAVANNAH, DESERT, SNOW};
+enum class BIOME { WATER = -1, BEACH, FOREST, JUNGLE, SAVANNAH, ROCKS, SNOW};
 class Map
 {
 public:
@@ -27,14 +27,12 @@ public:
 
 private:
     double noise(double nx, double ny);
+    int calculateTileIndex(BIOME sTL, BIOME sT, BIOME sTR,
+                           BIOME sL, BIOME sR, BIOME sBL,
+                           BIOME sB, BIOME sBR, BIOME trans);
     BIOME biome(double val);
-    void generateWater(glm::vec4& posVec, std::mt19937& rng);
-    void generateBeach(glm::vec4& posVec, std::mt19937& rng);
-    void generateForest(glm::vec4& posVec, std::mt19937& rng);
-    void generateJungle(glm::vec4& posVec, std::mt19937& rng);
-    void generateSavannah(glm::vec4& posVec, std::mt19937& rng);
-    void generateDesert(glm::vec4& posVec, std::mt19937& rng);
-    void generateSnow(glm::vec4& posVec, std::mt19937& rng);
+    void generateWater(glm::vec4& posVec, double val);
+    void generateMisc(glm::vec4& posVec, int startingTile);
 
 
 private:
@@ -42,14 +40,20 @@ private:
     int m_width = 0;
     int m_height = 0;
     int m_tileSize = 0;
+
+    Falcon::Color m_colorTint;
     Falcon::TileSheet m_tileSheet;
+    Falcon::TileSheet m_tileSheet2;
     Falcon::SpriteBatch m_layerOneSpriteBatch;
     Falcon::SpriteBatch m_layerTwoSpriteBatch;
+
     b2World* m_world;
     noise::module::Perlin m_gen;
     std::vector<std::vector<double>> m_value;
     std::vector<EvergreenTree> m_evergreens;
     std::vector<OakTree> m_oaks;
+    std::mt19937 m_rng;
+
 };
 
 

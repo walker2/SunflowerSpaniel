@@ -19,8 +19,6 @@ set(SOURCE_FILES
         src/GameplayScreen.cpp
         src/GameplayScreen.h
         src/main.cpp
-        src/Box.cpp
-        src/Box.h
         src/Player.cpp
         src/Player.h
         src/Circle.cpp
@@ -31,7 +29,26 @@ set(SOURCE_FILES
         include/ImGUI/imgui_impl_sdl.h
         include/ImGUI/imgui_draw.cpp
         include/ImGUI/imgui_internal.h
-        src/Map.cpp src/Map.h src/Tree.cpp src/Tree.h src/EvergreenTree.cpp src/EvergreenTree.h src/OakTree.cpp src/OakTree.h)
+        include/TinyXML2/tinyxml2.cpp
+        include/TinyXML2/tinyxml2.h
+        src/Map.cpp src/Map.h
+        src/Tree.cpp
+        src/Tree.h
+        src/EvergreenTree.cpp
+        src/EvergreenTree.h
+        src/OakTree.cpp
+        src/OakTree.h
+        src/Component.h
+        src/GameObject.cpp
+        src/GameObject.h
+        src/BodyComponent.cpp
+        src/BodyComponent.h
+        src/SpriteComponent.cpp
+        src/SpriteComponent.h
+        src/CollisionComponent.cpp
+        src/CollisionComponent.h
+        src/PlayerInputComponent.cpp
+        src/PlayerInputComponent.h src/ObjectFactory.cpp src/ObjectFactory.h)
 
 add_executable(SunflowerSpaniel ${SOURCE_FILES})
 include(FindPkgConfig)
