@@ -33,8 +33,8 @@ namespace Falcon
     protected:
         bool init();
         bool initSystems();
-        virtual void update();
-        virtual void draw();
+        virtual void update(float deltaTime);
+        virtual void draw(float deltaTime);
 
         std::unique_ptr<ScreenList> m_screenList;// = nullptr;
         IGameScreen* m_currentScreen = nullptr;

@@ -9,9 +9,12 @@ void Map::init(b2World *world, int mapWidth, int mapHeight, const std::string ti
     m_width = mapWidth;
     m_tileSize = tileSize / 10;
     m_world = world;
+    m_colorTint.setColor(255, 255, 255);
     Falcon::GLTexture texture = Falcon::ResourceManager::getTexture(tileSheetPath);
+    Falcon::GLTexture transTexture = Falcon::ResourceManager::getTexture("media/Textures/SandWaterTest.png");
 
     m_tileSheet.init(texture, glm::ivec2(texture.width / tileSize, texture.height / tileSize));
+    m_tileSheet2.init(transTexture, glm::ivec2(transTexture.width / tileSize, transTexture.height / tileSize));
     m_value.resize(m_height);
     for (auto& val : m_value)
     {
@@ -34,11 +37,11 @@ void Map::generateMap()
                      + 0.13 * noise( 8 * nx,  8 * ny)
                      + 0.06 * noise(16 * nx, 16 * ny)
                      + 0.03 * noise(32 * nx, 32 * ny));
-            e /= (1.00 + 0.50 + 0.25 + 0.13 + 0.06 + 0.03);
+            e /= (1.00 + 0.50 + 0.25 + 0.13);
             m_value[x][y] = e;
         }
     }
-    std::mt19937 rng(time(0));
+    m_rng.seed(time(0));
     m_gen.SetSeed(time(0));
 
     if (m_isGenerated)
@@ -59,38 +62,43 @@ void Map::generateMap()
     m_layerOneSpriteBatch.init();
     m_layerOneSpriteBatch.begin();
 
+    std::uniform_real_distribution<float> chance(0.0f, 1.0f);
     // Generate first layer (background)
-    for (int y = 0; y < m_height; y++)
+    for (int y = 1; y < m_height - 1; y++)
     {
-        for (int x = 0; x < m_width; x++)
+        for (int x = 1; x < m_width - 1; x++)
         {
             double tile = m_value[y][x];
-            glm::vec4 posVec(y * m_tileSize, x * m_tileSize, m_tileSize, m_tileSize);
 
-            switch (biome(tile))
+            glm::vec4 posVec(x * m_tileSize, y * m_tileSize, m_tileSize, m_tileSize);
+            BIOME sTL = biome(m_value[y + 1][x - 1]);
+            BIOME sT = biome(m_value[y + 1][x]);
+            BIOME sTR = biome(m_value[y + 1][x + 1]);
+            BIOME sL = biome(m_value[y][x - 1]);
+            BIOME sM = biome(m_value[y][x]);
+            BIOME sR = biome(m_value[y][x + 1]);
+            BIOME sBL = biome(m_value[y - 1][x - 1]);
+            BIOME sB = biome(m_value[y - 1][x]);
+            BIOME sBR = biome(m_value[y - 1][x + 1]);
+
+            if (sM == BIOME::WATER)
             {
-
-                case BIOME::WATER:
-                    generateWater(posVec, rng);
-                    break;
-                case BIOME::BEACH:
-                    generateBeach(posVec, rng);
-                    break;
-                case BIOME::FOREST:
-                    generateForest(posVec, rng);
-                    break;
-                case BIOME::JUNGLE:
-                    generateJungle(posVec, rng);
-                    break;
-                case BIOME::SAVANNAH:
-                    generateSavannah(posVec, rng);
-                    break;
-                case BIOME::DESERT:
-                    generateDesert(posVec, rng);
-                    break;
-                case BIOME::SNOW:
-                    generateSnow(posVec, rng);
-                    break;
+                generateWater(posVec, tile);
+            }
+            else
+            {
+                int index = calculateTileIndex(sTL, sT, sTR, sL, sR, sBL, sB, sBR, static_cast<BIOME>(static_cast<int>(sM) - 1));
+                int startTile = (992 - static_cast<int>(sM) * 32);
+                m_layerOneSpriteBatch.draw(
+                        posVec,
+                        m_tileSheet2.getUVs(startTile + index),
+                        m_tileSheet2.texture.id,
+                        0.0f,
+                        m_colorTint);
+                if (index > 15)
+                {
+                    generateMisc(posVec, startTile);
+                }
             }
         }
     }
@@ -98,14 +106,13 @@ void Map::generateMap()
 
     m_layerTwoSpriteBatch.init();
     m_layerTwoSpriteBatch.begin();
-    std::uniform_real_distribution<float> chance(0.0f, 1.0f);
     // Generate second layer (trees)
-    for (int y = 0; y < m_height; y++)
+    for (int y = m_height - 1; y > 0 ; y--)
     {
-        for (int x = 0; x < m_width; x++)
+        for (int x = m_width - 1; x > 0 ; x--)
         {
             double tile = m_value[y][x];
-            glm::vec4 posVec(y * m_tileSize, x * m_tileSize, m_tileSize, m_tileSize);
+            glm::vec4 posVec(x * m_tileSize, y * m_tileSize, m_tileSize, m_tileSize);
 
             switch (biome(tile))
             {
@@ -117,17 +124,24 @@ void Map::generateMap()
                     // EMPTY
                     break;
                 case BIOME::FOREST:
-                    if (chance(rng) > 0.98f)
+                    if (chance(m_rng) > 0.95f)
                     {
                         // Generate the tree
-                        if (chance(rng) > 0.5f)
+                        if (chance(m_rng) > 0.5f)
                         {
                             // Generate the oak
                             OakTree tree(m_world, posVec, m_tileSheet, m_tileSize);
                             tree.drawToSpriteBatch(m_layerTwoSpriteBatch);
                             m_oaks.push_back(tree);
                         }
-                        else
+
+                    }
+                    break;
+                case BIOME::JUNGLE:
+                    if (chance(m_rng) > 0.95f)
+                    {
+                        // Generate the tree
+                        if (chance(m_rng) > 0.5f)
                         {
                             // Generate evergreen
                             EvergreenTree tree(m_world, posVec, m_tileSheet, m_tileSize);
@@ -136,13 +150,10 @@ void Map::generateMap()
                         }
                     }
                     break;
-                case BIOME::JUNGLE:
-                    // EMPTY
-                    break;
                 case BIOME::SAVANNAH:
                     // EMPTY
                     break;
-                case BIOME::DESERT:
+                case BIOME::ROCKS:
                     // EMPTY
                     break;
                 case BIOME::SNOW:
@@ -156,27 +167,41 @@ void Map::generateMap()
     m_isGenerated = true;
 }
 
-void Map::generateWater(glm::vec4& posVec, std::mt19937& rng)
+void Map::generateWater(glm::vec4& posVec, double val)
 {
     std::uniform_real_distribution<float> chance(0.0f, 1.0f);
+
+    double diff = 1.0;
+    Falcon::Color color;
+    Falcon::Color color1;
+    if (val > 0.1)
+    {
+        diff = (0.35 - val) * 4;
+        color.setColor(m_colorTint.r * diff, m_colorTint.g * diff, m_colorTint.b);
+        color1.setColor(m_colorTint.r - color.r, m_colorTint.g - color.g, m_colorTint.b);
+    }
+    else
+    {
+        color1.setColor(0, 0, 255);
+    }
 
     m_layerOneSpriteBatch.draw(
             posVec,
             m_tileSheet.getUVs(924),
             m_tileSheet.texture.id,
             0.0f,
-            Falcon::Color(255, 255, 225, 255));
+            color1);
 
-    if (chance(rng) > 0.9f)
+    if (chance(m_rng) > 0.9f)
     {
-        if (chance(rng) > 0.5f)
+        if (chance(m_rng) > 0.5f)
         {
             m_layerOneSpriteBatch.draw(
                     posVec,
                     m_tileSheet.getUVs(859),
                     m_tileSheet.texture.id,
                     0.0f,
-                    Falcon::Color(255, 255, 225, 255));
+                    color1);
         }
         else
         {
@@ -185,252 +210,37 @@ void Map::generateWater(glm::vec4& posVec, std::mt19937& rng)
                     m_tileSheet.getUVs(860),
                     m_tileSheet.texture.id,
                     0.0f,
-                    Falcon::Color(255, 255, 225, 255));
+                    color1);
         }
     }
 }
 
-void Map::generateBeach(glm::vec4& posVec, std::mt19937& rng)
-{
-    std::uniform_real_distribution<float> chance(0.0f, 1.0f);
-    if (chance(rng) > 0.5f)
-    {
-        m_layerOneSpriteBatch.draw(
-                posVec,
-                m_tileSheet.getUVs(658),
-                m_tileSheet.texture.id,
-                0.0f,
-                Falcon::Color(255, 255, 225, 255));
-    }
-    else
-    {
-        if (chance(rng) > 0.5f)
-        {
-            m_layerOneSpriteBatch.draw(
-                    posVec,
-                    m_tileSheet.getUVs(659),
-                    m_tileSheet.texture.id,
-                    0.0f,
-                    Falcon::Color(255, 255, 225, 255));
-        }
-        else
-        {
-            m_layerOneSpriteBatch.draw(
-                    posVec,
-                    m_tileSheet.getUVs(660),
-                    m_tileSheet.texture.id,
-                    0.0f,
-                    Falcon::Color(255, 255, 225, 255));
-        }
-    }
-}
-
-void Map::generateForest(glm::vec4& posVec, std::mt19937& rng)
+void Map::generateMisc(glm::vec4 &posVec, int startingTile)
 {
     std::uniform_real_distribution<float> chance(0.0f, 1.0f);
 
-    if (chance(rng) > 0.5f)
-    {
-        // Generate simple grass
-        m_layerOneSpriteBatch.draw(
-                posVec,
-                m_tileSheet.getUVs(642),
-                m_tileSheet.texture.id,
-                0.0f,
-                Falcon::Color(255, 255, 225, 255));
-    }
-    else
-    {
-        if (chance(rng) > 0.3f)
-        {
-            // Generate low grass
-            m_layerOneSpriteBatch.draw(
-                    posVec,
-                    m_tileSheet.getUVs(641),
-                    m_tileSheet.texture.id,
-                    0.0f,
-                    Falcon::Color(255, 255, 225, 255));
-        }
-        else
-        {
-            // Generate high grass
-            m_layerOneSpriteBatch.draw(
-                    posVec,
-                    m_tileSheet.getUVs(640),
-                    m_tileSheet.texture.id,
-                    0.0f,
-                    Falcon::Color(255, 255, 225, 255));
-        }
-    }
-
-    if (chance(rng) > 0.9f)
-    {
-        if (chance(rng) > 0.2f)
-        {
-            // Generate mini bush
-            m_layerOneSpriteBatch.draw(
-                    posVec,
-                    m_tileSheet.getUVs(655),
-                    m_tileSheet.texture.id,
-                    0.0f,
-                    Falcon::Color(255, 255, 225, 255));
-
-            return;
-        }
-    }
-
-}
-
-void Map::generateJungle(glm::vec4& posVec, std::mt19937& rng)
-{
-    std::uniform_real_distribution<float> chance(0.0f, 1.0f);
-
-    if (chance(rng) > 0.5f)
-    {
-        // Generate simple grass
-        m_layerOneSpriteBatch.draw(
-                posVec,
-                m_tileSheet.getUVs(648),
-                m_tileSheet.texture.id,
-                0.0f,
-                Falcon::Color(255, 255, 225, 255));
-    }
-    else
-    {
-        if (chance(rng) > 0.3f)
-        {
-            // Generate low grass
-            m_layerOneSpriteBatch.draw(
-                    posVec,
-                    m_tileSheet.getUVs(647),
-                    m_tileSheet.texture.id,
-                    0.0f,
-                    Falcon::Color(255, 255, 225, 255));
-        }
-        else
-        {
-            // Generate high grass
-            m_layerOneSpriteBatch.draw(
-                    posVec,
-                    m_tileSheet.getUVs(646),
-                    m_tileSheet.texture.id,
-                    0.0f,
-                    Falcon::Color(255, 255, 225, 255));
-        }
-    }
-}
-
-void Map::generateSavannah(glm::vec4& posVec, std::mt19937& rng)
-{
-    std::uniform_real_distribution<float> chance(0.0f, 1.0f);
-
-    m_layerOneSpriteBatch.draw(
-            posVec,
-            m_tileSheet.getUVs(834),
-            m_tileSheet.texture.id,
-            0.0f,
-            Falcon::Color(255, 255, 225, 255));
-    if (chance(rng) > 0.985f)
-    {
-        // Generate big boulders
-        if (chance(rng) > 0.7f)
-        {
-            // First part of boulder
-            m_layerOneSpriteBatch.draw(
-                    posVec,
-                    m_tileSheet.getUVs(412),
-                    m_tileSheet.texture.id,
-                    0.0f,
-                    Falcon::Color(255, 255, 225, 255));
-            // Second part
-            m_layerOneSpriteBatch.draw(
-                    glm::vec4(posVec.x, posVec.y - m_tileSize, posVec.z, posVec.w),
-                    m_tileSheet.getUVs(380),
-                    m_tileSheet.texture.id,
-                    0.0f,
-                    Falcon::Color(255, 255, 225, 255));
-        }
-        else
-        {
-            // Generate one big boulder
-            m_layerOneSpriteBatch.draw(
-                    posVec,
-                    m_tileSheet.getUVs(415),
-                    m_tileSheet.texture.id,
-                    0.0f,
-                    Falcon::Color(255, 255, 225, 255));
-        }
-        return;
-    }
-
-    if (chance(rng) > 0.9f)
-    {
-        // Generate small stones
-        if (chance(rng) > 0.5f)
-        {
-            m_layerOneSpriteBatch.draw(
-                    posVec,
-                    m_tileSheet.getUVs(413),
-                    m_tileSheet.texture.id,
-                    0.0f,
-                    Falcon::Color(255, 255, 225, 255));
-        }
-        else
-        {
-            m_layerOneSpriteBatch.draw(
-                    posVec,
-                    m_tileSheet.getUVs(414),
-                    m_tileSheet.texture.id,
-                    0.0f,
-                    Falcon::Color(255, 255, 225, 255));
-        }
-        return;
-    }
-}
-
-void Map::generateDesert(glm::vec4& posVec, std::mt19937& rng)
-{
-    std::uniform_real_distribution<float> chance(0.0f, 1.0f);
-
-    // Generate simple desert tiles
-    m_layerOneSpriteBatch.draw(
-            posVec,
-            m_tileSheet.getUVs(837),
-            m_tileSheet.texture.id,
-            0.0f,
-            Falcon::Color(255, 255, 225, 255));
-    if (chance(rng) > 0.9f)
+    if (chance(m_rng) > 0.9f)
     {
         // Generate some stones or boulders
-        if (chance(rng) > 0.5f)
+        if (chance(m_rng) > 0.2f)
         {
             m_layerOneSpriteBatch.draw(
                     posVec,
-                    m_tileSheet.getUVs(447),
-                    m_tileSheet.texture.id,
+                    m_tileSheet2.getUVs(startingTile + 19),
+                    m_tileSheet2.texture.id,
                     0.0f,
-                    Falcon::Color(255, 255, 225, 255));
+                    m_colorTint);
         }
         else
         {
             m_layerOneSpriteBatch.draw(
                     posVec,
-                    m_tileSheet.getUVs(445),
-                    m_tileSheet.texture.id,
+                    m_tileSheet2.getUVs(startingTile + 20),
+                    m_tileSheet2.texture.id,
                     0.0f,
-                    Falcon::Color(255, 255, 225, 255));
+                    m_colorTint);
         }
     }
-}
-
-void Map::generateSnow(glm::vec4& posVec, std::mt19937& rng)
-{
-    m_layerOneSpriteBatch.draw(
-            posVec,
-            m_tileSheet.getUVs(466),
-            m_tileSheet.texture.id,
-            0.0f,
-            Falcon::Color(255, 255, 225, 255));
 }
 
 double Map::noise(double nx, double ny)
@@ -446,7 +256,7 @@ BIOME Map::biome(double val)
     else if (val < 0.55) return BIOME::FOREST;
     else if (val < 0.65) return BIOME::JUNGLE;
     else if (val < 0.75) return BIOME::SAVANNAH;
-    else if (val < 0.85) return BIOME::DESERT;
+    else if (val < 0.85) return BIOME::ROCKS;
     else return BIOME::SNOW;
 }
 
@@ -473,4 +283,53 @@ void Map::drawForeground()
 {
     m_layerTwoSpriteBatch.renderBatch();
 }
+
+int
+Map::calculateTileIndex(BIOME sTL, BIOME sT, BIOME sTR, BIOME sL, BIOME sR, BIOME sBL, BIOME sB, BIOME sBR, BIOME trans)
+{
+    int index = 0;
+
+    std::uniform_real_distribution<float> chance(0.0f, 1.0f);
+
+    if (sTL != trans && sT != trans && sL != trans)
+    {
+        index += 1;
+    }
+    if (sT != trans && sTR != trans && sR != trans)
+    {
+        index += 2;
+    }
+    if (sL != trans && sBL != trans && sB != trans)
+    {
+        index += 4;
+    }
+    if (sR != trans && sBR != trans && sB != trans)
+    {
+        index += 8;
+    }
+
+    if (index == 15)
+    {
+        if (chance(m_rng) > 0.9f)
+        {
+            if (chance(m_rng) > 0.7f)
+            {
+                index += 1;
+            }
+            else
+            {
+                index += 2;
+            }
+        }
+        else
+        {
+            if (chance(m_rng) > 0.7f)
+            {
+                index += 3;
+            }
+        }
+    }
+    return index;
+}
+
 

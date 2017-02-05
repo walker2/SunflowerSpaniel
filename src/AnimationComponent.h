@@ -1,0 +1,16 @@
+//
+// Created by andrewshipilo on 2/5/17.
+//
+
+#ifndef SUNFLOWERSPANIEL_ANIMATIONCOMPONENT_H
+#define SUNFLOWERSPANIEL_ANIMATIONCOMPONENT_H
+
+
+
+class AnimationComponent {
+
+};
+
+
+
+#endif //SUNFLOWERSPANIEL_ANIMATIONCOMPONENT_H

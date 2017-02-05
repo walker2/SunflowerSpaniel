@@ -4,14 +4,13 @@ varying vec4 fragmentColor;
 varying vec2 fragmentPosition;
 varying vec2 fragmentUV;
 
-//out vec4 color;
 
-uniform float time;
+uniform vec4 color;
 uniform sampler2D sampler;
 
 void main()
 {
-    vec4 textureColor = texture2D(sampler, fragmentUV);
+    vec4 textureColor = texture2D(sampler, fragmentUV) * color;
 
 	gl_FragColor = fragmentColor * textureColor;
 }

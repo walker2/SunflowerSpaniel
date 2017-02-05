@@ -21,6 +21,14 @@ namespace Falcon
             Color color(r - c.r, g - c.g, b - c.b, a - c.a);
             return color;
         };
+        void setColor(GLubyte _r, GLubyte _g, GLubyte _b,  GLubyte _a = 255)
+        {
+            r = _r;
+            g = _g;
+            b = _b;
+            a = _a;
+        }
+
         GLubyte r = 0;
         GLubyte g = 0;
         GLubyte b = 0;
