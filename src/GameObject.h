@@ -7,9 +7,12 @@
 #include "Component.h"
 #include "BodyComponent.h"
 
+enum class DIRECTION { NONE = 0, LEFT, RIGHT, UP, DOWN};
+
 class GameObject
 {
 public:
+
     GameObject()
     {
         attachComponent<BodyComponent>();
@@ -57,9 +60,13 @@ public:
         return nullptr;
     }
 
+    DIRECTION getDirection() const { return m_direction; };
+    void setDirection(DIRECTION dir) { m_direction = dir; };
 
 protected:
     std::vector<std::shared_ptr<Component>> m_components;
+
+    DIRECTION m_direction = DIRECTION::NONE;
 };
 
 

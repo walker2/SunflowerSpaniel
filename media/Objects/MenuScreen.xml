@@ -1,0 +1,18 @@
+<Object>
+
+    <BodyComponent>
+        <Position x="0" y="0"/>
+        <BodyType>Static</BodyType>
+        <FixedRotation>true</FixedRotation>
+        <LinearDamping>2</LinearDamping>
+    </BodyComponent>
+
+    <SpriteComponent>
+        <Texture>media/Textures/Firelandscape1.png</Texture>
+        <Color r="255" g="255" b="255" a="255"/>
+        <Dimensions height="720" width="1280"/>
+        <Position x="0" y="0"/>
+        <SpriteID>0</SpriteID>
+    </SpriteComponent>
+
+</Object>

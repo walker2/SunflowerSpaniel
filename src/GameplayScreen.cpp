@@ -1,16 +1,13 @@
 #include <iostream>
 #include "GameplayScreen.h"
 #include "Falcon/GameIntefaces/IMainGame.h"
-#include "Falcon/ResourceManager/ResourceManager.h"
-#include "SpriteComponent.h"
-#include "CollisionComponent.h"
-#include "PlayerInputComponent.h"
-#include <random>
+#include "AnimationComponent.h"
+#include "ScreenIndices.h"
 
 GameplayScreen::GameplayScreen(Falcon::Window *window)
         : m_window(window)
 {
-
+    m_screenIndex = SCREEN_INDEX_GAMEPLAY;
 }
 
 int GameplayScreen::getNextScreenIndex() const
@@ -20,49 +17,14 @@ int GameplayScreen::getNextScreenIndex() const
 
 int GameplayScreen::getPrevScreenIndex() const
 {
-    return SCREEN_INDEX_NO_SCREEN;
+    return SCREEN_INDEX_MAINMENU;
 }
 
 void GameplayScreen::create()
 {
-
-}
-
-void GameplayScreen::destroy()
-{
-
-}
-
-void GameplayScreen::onEntry()
-{
     ImGui_ImplSdl_Init(m_window->getSDLWindow());
 
-    b2Vec2 gravity(0.0f, 0.0f);
-    m_world = std::make_unique<b2World>(gravity);
-    m_objectFactory.setWorld(m_world.get());
-
     m_debugRender.init();
-    // Make a bunch of boxes
-    std::mt19937 rng(time(0));
-    std::uniform_real_distribution<float> x_dist(-10.0f, 10.0f);
-    std::uniform_real_distribution<float> y_dist(-15.0f, 15.0f);
-    std::uniform_real_distribution<float> size(1.0f, 4.0f);
-
-    const int numBoxes = 50;
-
-    for (int i = 0; i < numBoxes; i++)
-    {
-        auto box = m_objectFactory.createObject("media/Objects/Box.xml");
-        box->getComponent<BodyComponent>()->setPosition(glm::vec2(x_dist(rng), y_dist(rng)));
-
-        m_gameObjects.push_back(box);
-    }
-    for (int i = 0; i < 5; i++)
-    {
-        auto circle = m_objectFactory.createObject("media/Objects/Circle.xml");
-        circle->getComponent<BodyComponent>()->setPosition(glm::vec2(x_dist(rng), y_dist(rng)));
-        m_gameObjects.push_back(circle);
-    }
 
     //Init spritebatch
     m_spriteBatch.init();
@@ -76,62 +38,94 @@ void GameplayScreen::onEntry()
     m_camera.init(m_window->getScreenWidth(), m_window->getScreenHeight());
     m_camera.setScale(16.0f);
 
-    // Init player
-    m_player.init(m_world.get(), glm::vec2(10.0f, 10.0f), glm::vec2(2.0f, 2.0f));
-
-    //TODO: MAKE PLAYER XML, CREATE THE ANIMATION COMPONENT AND GET THE SHIT DONE IN THE MAP
-    auto player = createPlayer(m_world.get(),
-                               glm::vec2(15.0f, 10.0f),
-                               glm::vec2(0.0f, 1.0f),
-                               glm::vec2(2.0f, 2.0f),
-                               glm::vec2(4.0f, 4.0f),
-                               "media/Textures/Wolfpack.png",
-                               Falcon::Color(255, 255, 255, 255),
-                               56);
-
-    m_gameObjects.push_back(player);
-
     playerLight.color = Falcon::Color(62, 96, 111, 0);
     playerLight.size = 100.0f;
 
     mouseLight.color = Falcon::Color(0, 0, 0, 128);
     mouseLight.size = 15.0f;
+}
 
-    m_map.init(m_world.get(), 200, 200, "media/Textures/terrain.png", 32);
+void GameplayScreen::destroy()
+{
+    m_debugRender.dispose();
+}
+
+void GameplayScreen::onEntry()
+{
+    b2Vec2 gravity(0.0f, 0.0f);
+    m_world = std::make_unique<b2World>(gravity);
+    ObjectFactory::instance().setWorld(m_world.get());
+
+    // Make a bunch of boxes
+    std::mt19937 rng(time(0));
+    std::uniform_real_distribution<float> x_dist(-10.0f, 10.0f);
+    std::uniform_real_distribution<float> y_dist(-15.0f, 15.0f);
+    std::uniform_real_distribution<float> size(1.0f, 4.0f);
+
+    const int numBoxes = 50;
+
+    for (int i = 0; i < numBoxes; i++)
+    {
+        auto box = ObjectFactory::instance().createObject("media/Objects/Box.xml");
+        box->getComponent<BodyComponent>()->setPosition(glm::vec2(x_dist(rng), y_dist(rng)));
+
+        m_gameObjects.push_back(box);
+    }
+    for (int i = 0; i < 5; i++)
+    {
+        auto circle = ObjectFactory::instance().createObject("media/Objects/Circle.xml");
+        circle->getComponent<BodyComponent>()->setPosition(glm::vec2(x_dist(rng), y_dist(rng)));
+        m_gameObjects.push_back(circle);
+    }
+
+    m_player = ObjectFactory::instance().createObject("media/Objects/Player.xml");
+    m_gameObjects.push_back(m_player);
+
+    m_map.init(m_world.get(), 200, 200, "media/Textures/terrain.png", 32, &m_gameObjects);
+    m_map.generateMap();
 }
 
 void GameplayScreen::onExit()
 {
-    m_debugRender.dispose();
+    m_gameObjects.clear();
+
 }
 
 void GameplayScreen::update(float deltaTime)
 {
     checkInput();
-    m_player.update(m_game->inputManager, deltaTime);
     for (auto& object : m_gameObjects)
     {
         object->update(deltaTime);
     }
-    m_camera.setPosition(m_player.getPosition());
+    // TODO: MAYBE A CAMERA FOLLOW COMPONENT?
+    m_camera.setPosition(m_player->getComponent<BodyComponent>()->getPosition());
     m_camera.update();
 
-    playerLight.position = m_player.getPosition();
-    glm::vec2 mousePos = m_camera.screenToWorld(m_game->inputManager.getMouseCoords());
+    // TODO: MAKE A LIGHT COMPONENT
+    playerLight.position = m_player->getComponent<BodyComponent>()->getPosition();
+    glm::vec2 mousePos = m_camera.screenToWorld(Falcon::InputManager::instance().getMouseCoords());
     mouseLight.position = mousePos;
 
     // Update the physics simulation
-    m_world->Step(1.0f / 60.0f, 6, 2);
+    m_world->Step(1.0f / 60.0f, 3, 2);
 
     if (m_time < 0.0f)
     {
         m_darker = 1;
-    } else if (m_time > 0.7f)
+    }
+    else if (m_time > 0.7f)
     {
         m_darker = -1;
     }
+
     m_time += m_darker * 0.001f * deltaTime;
     playerLight.color.a = static_cast<GLubyte>(m_time * (255 / 0.7));
+
+    if (Falcon::InputManager::instance().isKeyPressed(SDLK_ESCAPE))
+    {
+        m_currentState = Falcon::ScreenState::CHANGE_PREV;
+    }
 
 }
 
@@ -162,6 +156,7 @@ void GameplayScreen::draw(float deltaTime)
     {
         m_map.drawBackground();
     }
+
     m_textureProgram.unuse();
 
     m_lightProgram.use();
@@ -183,35 +178,58 @@ void GameplayScreen::draw(float deltaTime)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     m_textureProgram.use();
-
     m_spriteBatch.begin();
     for (auto& object : m_gameObjects)
     {
         auto spriteComponent = object->getComponent<SpriteComponent>();
+        auto animationComponent = object->getComponent<AnimationComponent>();
         auto collisionComponent = object->getComponent<CollisionComponent>();
         auto bodyComponent = object->getComponent<BodyComponent>();
-        if (spriteComponent)
-        {
-            spriteComponent->draw(m_spriteBatch);
-        }
-        if (m_renderDebug)
-        {
-            if (collisionComponent)
-            {
-                if (bodyComponent->getBody()->GetType() == b2_dynamicBody)
-                {
-                    collisionComponent->drawDebug(m_debugRender, Falcon::Color(255, 0, 255, 255));
-                }
-                else
-                {
 
-                    collisionComponent->drawDebug(m_debugRender, Falcon::Color(255, 255, 0, 255));
-                }
+        if (!collisionComponent)
+        {
+            if (spriteComponent)
+            {
+                spriteComponent->draw(m_spriteBatch);
             }
 
+            if (animationComponent)
+            {
+                animationComponent->draw(m_spriteBatch, deltaTime);
+            }
         }
+        else if (m_camera.isBoxVisible(bodyComponent->getPosition(), collisionComponent->getDimensions()))
+        {
+            if (spriteComponent)
+            {
+                spriteComponent->draw(m_spriteBatch);
+            }
+
+            if (animationComponent)
+            {
+                animationComponent->draw(m_spriteBatch, deltaTime);
+            }
+
+
+            if (m_renderDebug)
+            {
+                if (collisionComponent)
+                {
+                    if (bodyComponent->getBody()->GetType() == b2_dynamicBody)
+                    {
+                        collisionComponent->drawDebug(m_debugRender, Falcon::Color(255, 0, 255, 255));
+                    }
+                    else
+                    {
+
+                        collisionComponent->drawDebug(m_debugRender, Falcon::Color(255, 255, 0, 255));
+                    }
+                }
+
+            }
+        }
+
     }
-    m_player.draw(m_spriteBatch, deltaTime);
     m_spriteBatch.end();
     m_spriteBatch.renderBatch();
 
@@ -221,32 +239,24 @@ void GameplayScreen::draw(float deltaTime)
     }
     m_textureProgram.unuse();
 
+    m_debugRender.end();
+    m_debugRender.render(projectionMatrix, 2.0f);
 
-    //Debug rendering
-    if (m_renderDebug)
+
+    bool open = true;
+    ImGui::SetNextWindowPos(ImVec2(10,10));
+    if (!ImGui::Begin("Example: Fixed Overlay", &open, ImVec2(0,0), 0.3f, ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoResize|ImGuiWindowFlags_NoMove|ImGuiWindowFlags_NoSavedSettings))
     {
-        m_map.drawDebug(m_debugRender);
-        m_player.drawDebug(m_debugRender);
-
-        m_debugRender.end();
-        m_debugRender.render(projectionMatrix, 2.0f);
+        ImGui::End();
+        return;
     }
 
 
-    ImGui::SetNextWindowSize(ImVec2(200,100), ImGuiSetCond_FirstUseEver);
-    ImGui::Begin("Debug stuff");
-    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-
-    if (ImGui::ColorEdit3("Mouse light color", mouse_color))
-    {
-        mouseLight.color.r = static_cast<GLubyte>(mouse_color[0] * 255.f);
-        mouseLight.color.g = static_cast<GLubyte>(mouse_color[1] * 255.f);
-        mouseLight.color.b = static_cast<GLubyte>(mouse_color[2] * 255.f);
-    }
     if (ImGui::Button("Debug mode"))
     {
         m_renderDebug = !m_renderDebug;
     }
+    ImGui::SameLine();
     if (ImGui::Button("Random mouse color"))
     {
         std::mt19937 rng(time(0));
@@ -255,18 +265,44 @@ void GameplayScreen::draw(float deltaTime)
         mouseLight.color.g = static_cast<GLubyte>(color(rng));
         mouseLight.color.b = static_cast<GLubyte>(color(rng));
     }
-    if (ImGui::Button("Generate random map"))
-    {
-        m_map.generateMap();
-    }
-    ImGui::Text("Mouse position (%.2f, %.2f)", m_camera.screenToWorld(m_game->inputManager.getMouseCoords()).x, m_camera.screenToWorld(m_game->inputManager.getMouseCoords()).y);
-    ImGui::Text("Player position (%.2f, %.2f)", m_player.getPosition().x, m_player.getPosition().y);
+    ImGui::Separator();
+    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    ImGui::Text("Mouse position (%.2f, %.2f)", m_camera.screenToWorld(Falcon::InputManager::instance().getMouseCoords()).x, m_camera.screenToWorld(Falcon::InputManager::instance().getMouseCoords()).y);
+    ImGui::Text("Player position (%.2f, %.2f)", m_player->getComponent<BodyComponent>()->getPosition().x, m_player->getComponent<BodyComponent>()->getPosition().y);
     ImGui::Text("Time %.5f", m_time);
     ImGui::Text("Player light alpha %i", playerLight.color.a);
-    ImGui::Text("Number of objects in the scene %l", m_gameObjects.size());
+    ImGui::Text("Number of objects in the scene %i", m_gameObjects.size());
+    ImGui::Text("RAM usage by app %i kbytes", getRamUsage());
     ImGui::End();
     ImGui::Render();
 
+}
+
+int parseLine(char* line)
+{
+    // This assumes that a digit will be found and the line ends in " Kb".
+    int i = strlen(line);
+    const char* p = line;
+    while (*p <'0' || *p > '9') p++;
+    line[i-3] = '\0';
+    i = atoi(p);
+    return i;
+}
+
+int GameplayScreen::getRamUsage()
+{ //Note: this value is in KB!
+    FILE* file = fopen("/proc/self/status", "r");
+    int result = -1;
+    char line[128];
+
+    while (fgets(line, 128, file) != NULL){
+        if (strncmp(line, "VmRSS:", 6) == 0){
+            result = parseLine(line);
+            break;
+        }
+    }
+    fclose(file);
+    return result;
 }
 
 void GameplayScreen::checkInput()
@@ -278,39 +314,6 @@ void GameplayScreen::checkInput()
         ImGui_ImplSdl_ProcessEvent(&e);
     }
 }
-std::shared_ptr<GameObject>
-GameplayScreen::createCircle(b2World *world, const glm::vec2 position, const glm::vec2 dimensions, bool fixedRotation, b2BodyType bodyType)
-{
-    std::shared_ptr<GameObject> obj = std::make_shared<GameObject>();
-    b2CircleShape circleShape;
-    circleShape.m_radius = dimensions.x / 2.0f;
-
-    obj->getComponent<BodyComponent>()->init(world, position, dimensions, bodyType, fixedRotation);
-
-    obj->attachComponent<CollisionComponent>();
-    obj->getComponent<CollisionComponent>()->init(obj.get(), &circleShape, dimensions);
-
-    return obj;
-}
-
-std::shared_ptr<GameObject>
-GameplayScreen::createPlayer(b2World *world,
-                             const glm::vec2 collisionPosition,
-                             const glm::vec2 spritePosition,
-                             const glm::vec2 collisionDimensions,
-                             const glm::vec2 spriteDimensions,
-                             const std::string &texturePath,
-                             Falcon::Color color, int spriteID)
-{
-    auto obj = createCircle(world, collisionPosition, collisionDimensions, true, b2_dynamicBody);
-    obj->attachComponent<PlayerInputComponent>();
-    obj->getComponent<PlayerInputComponent>()->init(&m_game->inputManager);
-
-    obj->attachComponent<SpriteComponent>();
-    obj->getComponent<SpriteComponent>()->init(texturePath, color, spriteDimensions, spritePosition, spriteID);
-    return obj;
-}
-
 
 void GameplayScreen::compileShader(Falcon::ShaderProgram& shaderProgram, const std::string &vertPath, const std::string &fragPath)
 {

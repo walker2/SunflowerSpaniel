@@ -28,8 +28,6 @@ namespace Falcon
 
         const float getFPS() const { return m_FPS; }
 
-        InputManager inputManager;
-
     protected:
         bool init();
         bool initSystems();

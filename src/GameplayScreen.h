@@ -5,8 +5,6 @@
 #include <vector>
 #include <bits/unique_ptr.h>
 #include <Box2D/Box2D.h>
-
-#include "Player.h"
 #include "Map.h"
 
 #include "Falcon/GameIntefaces/IGameScreen.h"
@@ -47,17 +45,8 @@ public:
 
 private:
     void checkInput();
-    std::shared_ptr<GameObject> createCircle(b2World *world, const glm::vec2 position, const glm::vec2 dimensions,
-                                             bool fixedRotation, b2BodyType bodyType);
-    std::shared_ptr<GameObject> createPlayer(b2World *world,
-                                             const glm::vec2 collisionPosition,
-                                             const glm::vec2 spritePosition,
-                                             const glm::vec2 collisionDimensions,
-                                             const glm::vec2 spriteDimensions,
-                                             const std::string &texturePath,
-                                             Falcon::Color color, int spriteID);
-
     void compileShader(Falcon::ShaderProgram& shaderProgram, const std::string& vertPath, const std::string& fragPath);
+    int getRamUsage();
 
     bool m_renderDebug = false;
     float mouse_color[3];
@@ -75,13 +64,9 @@ private:
     Falcon::BasicLight playerLight;
     Falcon::BasicLight mouseLight;
     std::vector<std::shared_ptr<GameObject>> m_gameObjects;
-
-    ObjectFactory m_objectFactory;
-    Player m_player;
+    std::shared_ptr<GameObject> m_player;
     Map m_map;
     std::unique_ptr<b2World> m_world;
-
-
 };
 
 

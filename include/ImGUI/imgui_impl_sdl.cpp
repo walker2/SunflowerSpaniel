@@ -91,6 +91,8 @@ void ImGui_ImplSdl_RenderDrawLists(ImDrawData* draw_data)
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     glDisableClientState(GL_VERTEX_ARRAY);
     glBindTexture(GL_TEXTURE_2D, (GLuint)last_texture);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
     glMatrixMode(GL_PROJECTION);
@@ -168,11 +170,13 @@ bool ImGui_ImplSdl_CreateDeviceObjects()
     glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, pixels);
 
+
     // Store our identifier
     io.Fonts->TexID = (void *)(intptr_t)g_FontTexture;
 
     // Restore state
     glBindTexture(GL_TEXTURE_2D, last_texture);
+
 
     return true;
 }

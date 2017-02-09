@@ -9,9 +9,13 @@ namespace Falcon
     class InputManager
     {
     public:
-        InputManager() : m_mouseCoords(0) {};
-        ~InputManager() {};
+        static InputManager& instance()
+        {
+            static InputManager *instance = new InputManager();
+            return *instance;
+        }
 
+    public:
         void update();
 
         void pressKey(unsigned int keyID);
@@ -29,12 +33,16 @@ namespace Falcon
     private:
         /// Returns true if the key is held down
         bool wasKeyDown(unsigned int keyID);
+
     private:
 
         std::unordered_map<unsigned int, bool> m_keyMap;
         std::unordered_map<unsigned int, bool> _previousKeyMap;
 
         glm::vec2 m_mouseCoords;
+
+    private:
+        InputManager() {}
     };
 }
 
