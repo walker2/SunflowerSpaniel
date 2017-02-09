@@ -3,6 +3,7 @@
 
 #include <Falcon/GameIntefaces/IMainGame.h>
 #include "GameplayScreen.h"
+#include "MainMenuScreen.h"
 
 
 class App : public Falcon::IMainGame
@@ -19,6 +20,7 @@ public:
 
 private:
     std::unique_ptr<GameplayScreen> m_gameplayScreen = nullptr;
+    std::unique_ptr<MainMenuScreen> m_mainmenuScreen = nullptr;
 };
 
 

@@ -12,11 +12,14 @@
 class ObjectFactory
 {
 public:
-    ObjectFactory();
+    static ObjectFactory& instance()
+    {
+        static ObjectFactory *instance = new ObjectFactory();
+        return *instance;
+    }
+
     std::shared_ptr<GameObject> createObject(const char* objectResource);
     void addComponent(std::shared_ptr<GameObject> obj, tinyxml2::XMLNode* pNode);
-
-
     void setWorld(b2World* world) { m_world = world; };
 private:
     unsigned long getNextActorId()
@@ -27,6 +30,9 @@ private:
 
     unsigned long m_lastObjectID;
     b2World* m_world;
+
+private:
+    ObjectFactory() {};
 };
 
 

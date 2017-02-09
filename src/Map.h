@@ -7,8 +7,7 @@
 #include <libnoise/noise.h>
 #include <Box2D/Box2D.h>
 
-#include "EvergreenTree.h"
-#include "OakTree.h"
+#include "GameObject.h"
 
 enum class BIOME { WATER = -1, BEACH, FOREST, JUNGLE, SAVANNAH, ROCKS, SNOW};
 class Map
@@ -17,11 +16,11 @@ public:
     Map() {};
     ~Map() {};
 
-    void init(b2World *world, int mapWidth, int mapHeight, const std::string tileSheetPath, int tileSize);
+    void init(b2World *world, int mapWidth, int mapHeight, const std::string tileSheetPath, int tileSize, std::vector<std::shared_ptr<GameObject>>* gameObjects);
     void generateMap();
     void drawBackground();
     void drawForeground();
-    void drawDebug(Falcon::DebugRenderer &debugRenderer);
+    void dispose() { m_value.clear(); };
 
     bool isGenerated() { return m_isGenerated; };
 
@@ -47,11 +46,9 @@ private:
     Falcon::SpriteBatch m_layerOneSpriteBatch;
     Falcon::SpriteBatch m_layerTwoSpriteBatch;
 
-    b2World* m_world;
+    std::vector<std::shared_ptr<GameObject>>* m_gameObjects;
     noise::module::Perlin m_gen;
     std::vector<std::vector<double>> m_value;
-    std::vector<EvergreenTree> m_evergreens;
-    std::vector<OakTree> m_oaks;
     std::mt19937 m_rng;
 
 };

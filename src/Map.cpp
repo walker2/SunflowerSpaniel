@@ -1,14 +1,15 @@
 #include <Falcon/ResourceManager/ResourceManager.h>
 #include <iostream>
 #include <random>
+#include "ObjectFactory.h"
 #include "Map.h"
 
-void Map::init(b2World *world, int mapWidth, int mapHeight, const std::string tileSheetPath, int tileSize)
+void Map::init(b2World *world, int mapWidth, int mapHeight, const std::string tileSheetPath, int tileSize, std::vector<std::shared_ptr<GameObject>>* gameObjects)
 {
+    m_gameObjects = gameObjects;
     m_height = mapHeight;
     m_width = mapWidth;
     m_tileSize = tileSize / 10;
-    m_world = world;
     m_colorTint.setColor(255, 255, 255);
     Falcon::GLTexture texture = Falcon::ResourceManager::getTexture(tileSheetPath);
     Falcon::GLTexture transTexture = Falcon::ResourceManager::getTexture("media/Textures/SandWaterTest.png");
@@ -20,7 +21,6 @@ void Map::init(b2World *world, int mapWidth, int mapHeight, const std::string ti
     {
         val.resize(m_width);
     }
-    m_gen.SetSeed(time(0));
 }
 
 void Map::generateMap()
@@ -43,21 +43,6 @@ void Map::generateMap()
     }
     m_rng.seed(time(0));
     m_gen.SetSeed(time(0));
-
-    if (m_isGenerated)
-    {
-        for (auto& tree : m_evergreens)
-        {
-            tree.getCollision()->destroy();
-        }
-        for (auto& tree : m_oaks)
-        {
-            tree.getCollision()->destroy();
-        }
-
-        m_evergreens.clear();
-        m_oaks.clear();
-    }
 
     m_layerOneSpriteBatch.init();
     m_layerOneSpriteBatch.begin();
@@ -95,6 +80,7 @@ void Map::generateMap()
                         m_tileSheet2.texture.id,
                         0.0f,
                         m_colorTint);
+
                 if (index > 15)
                 {
                     generateMisc(posVec, startTile);
@@ -130,9 +116,9 @@ void Map::generateMap()
                         if (chance(m_rng) > 0.5f)
                         {
                             // Generate the oak
-                            OakTree tree(m_world, posVec, m_tileSheet, m_tileSize);
-                            tree.drawToSpriteBatch(m_layerTwoSpriteBatch);
-                            m_oaks.push_back(tree);
+                            auto oak = ObjectFactory::instance().createObject("media/Objects/Oak.xml");
+                            oak->getComponent<BodyComponent>()->setPosition(glm::vec2(posVec.x, posVec.y));
+                            m_gameObjects->push_back(oak);
                         }
 
                     }
@@ -144,9 +130,9 @@ void Map::generateMap()
                         if (chance(m_rng) > 0.5f)
                         {
                             // Generate evergreen
-                            EvergreenTree tree(m_world, posVec, m_tileSheet, m_tileSize);
-                            tree.drawToSpriteBatch(m_layerTwoSpriteBatch);
-                            m_evergreens.push_back(tree);
+                            auto evergreen = ObjectFactory::instance().createObject("media/Objects/Evergreen.xml");
+                            evergreen->getComponent<BodyComponent>()->setPosition(glm::vec2(posVec.x, posVec.y));
+                            m_gameObjects->push_back(evergreen);
                         }
                     }
                     break;
@@ -258,20 +244,6 @@ BIOME Map::biome(double val)
     else if (val < 0.75) return BIOME::SAVANNAH;
     else if (val < 0.85) return BIOME::ROCKS;
     else return BIOME::SNOW;
-}
-
-void Map::drawDebug(Falcon::DebugRenderer &debugRenderer)
-{
-    // Draw evergreen debug
-    for (auto& tree : m_evergreens)
-    {
-        tree.drawDebug(debugRenderer);
-    }
-    // Draw oaks debug
-    for (auto& tree : m_oaks)
-    {
-        tree.drawDebug(debugRenderer);
-    }
 }
 
 void Map::drawBackground()

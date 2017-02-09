@@ -1,11 +1,7 @@
 #include "ObjectFactory.h"
+#include "AnimationComponent.h"
+#include "DirectionalAnimationComponent.h"
 #include <Falcon/Errors/Errors.h>
-
-
-ObjectFactory::ObjectFactory()
-{
-
-}
 
 std::shared_ptr<GameObject> ObjectFactory::createObject(const char *objectResource)
 {
@@ -59,6 +55,16 @@ void ObjectFactory::addComponent(std::shared_ptr<GameObject> obj, tinyxml2::XMLN
     {
         obj->attachComponent<PlayerInputComponent>();
         obj->getComponent<PlayerInputComponent>()->init(pNode);
+    }
+    else if (component == "AnimationComponent")
+    {
+        obj->attachComponent<AnimationComponent>();
+        obj->getComponent<AnimationComponent>()->init(pNode);
+    }
+    else if (component == "DirectionalAnimationComponent")
+    {
+        obj->attachComponent<DirectionalAnimationComponent>();
+        obj->getComponent<DirectionalAnimationComponent>()->init(pNode);
     }
 
 }

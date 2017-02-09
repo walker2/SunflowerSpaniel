@@ -1,0 +1,20 @@
+<Object>
+
+    <BodyComponent>
+        <Position x="-70" y="-235"/>
+        <BodyType>Static</BodyType>
+        <FixedRotation>true</FixedRotation>
+        <LinearDamping>2</LinearDamping>
+    </BodyComponent>
+
+    <AnimationComponent>
+        <Texture tileSize="100">media/Textures/Fire.png</Texture>
+        <Color r="255" g="255" b="255" a="255"/>
+        <Dimensions height="200" width="200"/>
+        <Position x="0" y="0"/>
+        <SpriteID>0</SpriteID>
+        <AnimationSpeed>0.1</AnimationSpeed>
+        <FrameCount>10</FrameCount>
+    </AnimationComponent>
+
+</Object>

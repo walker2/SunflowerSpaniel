@@ -19,16 +19,13 @@ set(SOURCE_FILES
         src/GameplayScreen.cpp
         src/GameplayScreen.h
         src/main.cpp
-        src/Player.cpp
-        src/Player.h
-        src/Circle.cpp
-        src/Circle.h
         include/ImGUI/imgui.cpp
         include/ImGUI/imgui.h
         include/ImGUI/imgui_impl_sdl.cpp
         include/ImGUI/imgui_impl_sdl.h
         include/ImGUI/imgui_draw.cpp
         include/ImGUI/imgui_internal.h
+        include/ImGUI/imgui_demo.cpp
         include/TinyXML2/tinyxml2.cpp
         include/TinyXML2/tinyxml2.h
         src/Map.cpp src/Map.h
@@ -48,7 +45,7 @@ set(SOURCE_FILES
         src/CollisionComponent.cpp
         src/CollisionComponent.h
         src/PlayerInputComponent.cpp
-        src/PlayerInputComponent.h src/ObjectFactory.cpp src/ObjectFactory.h)
+        src/PlayerInputComponent.h src/ObjectFactory.cpp src/ObjectFactory.h src/AnimationComponent.cpp src/AnimationComponent.h src/MainMenuScreen.cpp src/MainMenuScreen.h src/ScreenIndices.h src/DirectionalAnimationComponent.cpp src/DirectionalAnimationComponent.h)
 
 add_executable(SunflowerSpaniel ${SOURCE_FILES})
 include(FindPkgConfig)
