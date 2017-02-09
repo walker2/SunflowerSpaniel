@@ -1,8 +1,7 @@
 #ifndef FALCONLATINUM_SPRITE_H
 #define FALCONLATINUM_SPRITE_H
 
-//#include "SDL2/SDL_opengl.h"
-#include <GLES2/gl2.h>
+#include <GL/glew.h>
 #include "GLTexture.h"
 
 #include <string>

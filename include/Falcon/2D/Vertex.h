@@ -1,8 +1,7 @@
 #ifndef FALCONLATINUM_VERTEX_H
 #define FALCONLATINUM_VERTEX_H
 
-//#include "SDL2/SDL_opengl.h"
-#include <GLES2/gl2.h>
+#include <GL/glew.h>
 namespace Falcon
 {
     struct Position

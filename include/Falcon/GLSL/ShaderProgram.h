@@ -2,8 +2,7 @@
 #define FALCONLATINUM_GLSLPROGRAM_H
 
 #include <string>
-#include <GLES2/gl2.h>
-//#include "SDL2/SDL_opengl.h"
+#include <GL/glew.h>
 namespace Falcon
 {
     class ShaderProgram

@@ -2,7 +2,7 @@
 #define FALCONLATINUM_WINDOW_H
 
 #include <SDL2/SDL.h>
-#include "SDL2/SDL_opengl.h"
+#include <GL/glew.h>
 #include <string>
 namespace Falcon {
     enum WindowFlags {

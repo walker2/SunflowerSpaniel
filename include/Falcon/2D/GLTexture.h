@@ -1,7 +1,7 @@
 #ifndef FALCONLATINUM_GLTEXTURE_H
 #define FALCONLATINUM_GLTEXTURE_H
 
-#include <GLES2/gl2.h>
+#include <GL/glew.h>
 namespace Falcon
 {
     struct GLTexture
