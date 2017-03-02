@@ -1,7 +1,6 @@
 #include <Falcon/ResourceManager/ResourceManager.h>
-#include <iostream>
 #include <random>
-#include "ObjectFactory.h"
+#include "../ObjectFactory/ObjectFactory.h"
 #include "Map.h"
 
 void Map::init(b2World *world, int mapWidth, int mapHeight, const std::string tileSheetPath, int tileSize, std::vector<std::shared_ptr<GameObject>>* gameObjects)

@@ -2,7 +2,6 @@
 
 void CollisionComponent::init(tinyxml2::XMLNode *pNode)
 {
-
     m_body = m_obj->getComponent<BodyComponent>()->getBody();
 
     tinyxml2::XMLElement *pDimensionsElement = pNode->FirstChildElement("Dimensions");

@@ -1,13 +1,13 @@
-<Object>
+<WoodItem>
     <BodyComponent>
         <Position x="0" y="0"/>
-        <BodyType>Static</BodyType>
-        <FixedRotation>false</FixedRotation>
+        <BodyType>Dynamic</BodyType>
+        <FixedRotation>true</FixedRotation>
         <LinearDamping>2</LinearDamping>
     </BodyComponent>
 
     <CollisionComponent>
-        <Dimensions height="2.5" width="2.5"/>
+        <Dimensions height="1.5" width="1.5"/>
         <Shape name="Circle">
             <Density>1.0f</Density>
             <Friction>0.3f</Friction>
@@ -15,23 +15,18 @@
     </CollisionComponent>
 
     <SpriteComponent>
-        <Texture>media/Textures/Oak.png</Texture>
+        <Texture>media/Textures/wood.png</Texture>
         <Color r="255" g="255" b="255" a="255"/>
-        <Dimensions height="16" width="9.6"/>
-        <Position x="0" y="4"/>
+        <Dimensions height="1.5" width="1.5"/>
+        <Position x="0" y="0"/>
         <SpriteID>0</SpriteID>
     </SpriteComponent>
 
     <InteractiveComponent>
         <Font size="12">media/Fonts/pixel_font.ttf</Font>
-        <Text scale="0.125">E: BARK</Text>
+        <Text scale="0.125">F: PICK UP</Text>
         <Color r="255" g="255" b="255" a="255"/>
-        <InteractionKey>e</InteractionKey>
-        <InteractionType>Spawn</InteractionType>
+        <InteractionKey>f</InteractionKey>
+        <InteractionType>Pickup</InteractionType>
     </InteractiveComponent>
-
-    <SpawnObjectComponent>
-
-    </SpawnObjectComponent>
-
-</Object>
+</WoodItem>

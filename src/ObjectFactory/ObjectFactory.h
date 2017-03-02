@@ -5,9 +5,9 @@
 #include <memory>
 #include <TinyXML2/tinyxml2.h>
 #include "GameObject.h"
-#include "CollisionComponent.h"
-#include "SpriteComponent.h"
-#include "PlayerInputComponent.h"
+#include "../Components/CollisionComponent.h"
+#include "../Components/SpriteComponent.h"
+#include "../Components/PlayerInputComponent.h"
 
 class ObjectFactory
 {
@@ -21,6 +21,7 @@ public:
     std::shared_ptr<GameObject> createObject(const char* objectResource);
     void addComponent(std::shared_ptr<GameObject> obj, tinyxml2::XMLNode* pNode);
     void setWorld(b2World* world) { m_world = world; };
+    std::vector<std::shared_ptr<GameObject>>* getGameObjects() { return &m_gameObjects; };
 private:
     unsigned long getNextActorId()
     {
@@ -33,6 +34,7 @@ private:
 
 private:
     ObjectFactory() {};
+    std::vector<std::shared_ptr<GameObject>> m_gameObjects;
 };
 
 

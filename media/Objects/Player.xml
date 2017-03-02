@@ -14,6 +14,14 @@
         </Shape>
     </CollisionComponent>
 
+    <SensorComponent>
+        <Dimensions height="8" width="8"/>
+        <Shape name="Circle">
+            <Density>1.0f</Density>
+            <Friction>0.3f</Friction>
+        </Shape>
+    </SensorComponent>
+
     <PlayerInputComponent>
         <MovementSpeed>20.0f</MovementSpeed>
         <LeftKeyID>a</LeftKeyID>

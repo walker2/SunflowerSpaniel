@@ -6,7 +6,7 @@
 #include <Falcon/2D/TileSheet.h>
 #include <Falcon/ResourceManager/ResourceManager.h>
 #include "Component.h"
-#include "GameObject.h"
+#include "../ObjectFactory/GameObject.h"
 
 class SpriteComponent : public Component
 {

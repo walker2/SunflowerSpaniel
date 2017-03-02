@@ -9,7 +9,7 @@
 #include <Falcon/2D/SpriteBatch/SpriteBatch.h>
 #include "ImGUI/imgui.h"
 #include "ImGUI/imgui_impl_sdl.h"
-#include "GameObject.h"
+#include "../ObjectFactory/GameObject.h"
 
 class MainMenuScreen : public Falcon::IGameScreen
 {

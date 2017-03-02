@@ -71,8 +71,6 @@ void AnimationComponent::init(tinyxml2::XMLNode *pNode)
     {
         pFrameCountElement->QueryIntText(&m_frameCount);
     }
-
-
 }
 
 void AnimationComponent::update(GameObject *obj, float deltaTime)
@@ -93,35 +91,6 @@ void AnimationComponent::draw(Falcon::SpriteBatch &spriteBatch, float deltaTime)
 
         int tileIndex;
         tileIndex = m_tileIndex;
-        /*switch (m_direction)
-        {
-            case DIRECTION::LEFT:
-                m_tileIndex = 56;
-                break;
-            case DIRECTION::RIGHT:
-                m_tileIndex = 48;
-                break;
-            case DIRECTION::UP:
-                m_tileIndex = 32;
-                break;
-            case DIRECTION::DOWN:
-                m_tileIndex = 40;
-                break;
-        }*/
-
-        // TODO: SET IT TO PLAYER ANIMATION COMPONENT
-        /*
-        if (m_body)
-        {
-            if (abs(m_body->GetLinearVelocity().x) > 1.0f || abs(m_body->GetLinearVelocity().y) > 1.0f)
-            {
-                m_frameCount = 4;
-            }
-            else
-            {
-                m_frameCount = 1;
-            }
-        }*/
 
         // Increment animation tile
         m_animTime += m_animSpeed * deltaTime;

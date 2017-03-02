@@ -7,7 +7,7 @@
 #include <Box2D/Box2D.h>
 #include "Component.h"
 #include "BodyComponent.h"
-#include "GameObject.h"
+#include "../ObjectFactory/GameObject.h"
 
 class PlayerInputComponent : public Component
 {

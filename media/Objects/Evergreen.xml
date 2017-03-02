@@ -22,4 +22,15 @@
         <SpriteID>0</SpriteID>
     </SpriteComponent>
 
+    <InteractiveComponent>
+        <Font size="12">media/Fonts/pixel_font.ttf</Font>
+        <Text scale="0.125">E: BARK</Text>
+        <Color r="255" g="255" b="255" a="255"/>
+        <InteractionKey>e</InteractionKey>
+        <InteractionType>Spawn</InteractionType>
+    </InteractiveComponent>
+
+    <SpawnObjectComponent>
+
+    </SpawnObjectComponent>
 </Object>

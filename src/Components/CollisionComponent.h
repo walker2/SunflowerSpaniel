@@ -4,15 +4,15 @@
 
 #include <Box2D/Box2D.h>
 #include <Falcon/2D/DebugRenderer/DebugRenderer.h>
-#include "GameObject.h"
+#include "../ObjectFactory/GameObject.h"
 class CollisionComponent : public Component
 {
 public:
     CollisionComponent() {};
 
-    void init(tinyxml2::XMLNode *pNode) override;
-
+    virtual void init(tinyxml2::XMLNode *pNode) override;
     void init(GameObject* obj, b2Shape* shape, const glm::vec2 dimensions);
+
     void update(GameObject* obj, float deltaTime);
 
     // Maybe this should be another component but this seems logical enough
@@ -27,7 +27,7 @@ public:
     void setObject(GameObject* obj) { m_obj = obj; }
 
 
-private:
+protected:
     GameObject* m_obj;
     b2Fixture* m_fixture;
     b2Body* m_body = nullptr;

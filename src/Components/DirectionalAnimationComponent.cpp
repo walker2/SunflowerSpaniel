@@ -4,8 +4,8 @@ void DirectionalAnimationComponent::draw(Falcon::SpriteBatch &spriteBatch, float
 {
     if (m_tileIndex != -1)
     {
-        int frameCount;
-        int tileIndex;
+        int frameCount = 1;
+        int tileIndex = 0;
         tileIndex = m_tileIndex;
 
         switch (m_direction)
@@ -22,6 +22,9 @@ void DirectionalAnimationComponent::draw(Falcon::SpriteBatch &spriteBatch, float
             case DIRECTION::DOWN:
                 m_tileIndex = m_tileIndexDownDir;
                 break;
+            case DIRECTION::NONE:
+                m_tileIndex = m_tileIndexLeftDir;
+                break;
         }
 
         if (m_body)
@@ -29,10 +32,6 @@ void DirectionalAnimationComponent::draw(Falcon::SpriteBatch &spriteBatch, float
             if (abs(m_body->GetLinearVelocity().x) > 1.0f || abs(m_body->GetLinearVelocity().y) > 1.0f)
             {
                 frameCount = m_frameCount;
-            }
-            else
-            {
-                frameCount = 1;
             }
         }
 

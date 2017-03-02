@@ -2,8 +2,8 @@
 #define SUNFLOWERSPANIEL_APP_H
 
 #include <Falcon/GameIntefaces/IMainGame.h>
-#include "GameplayScreen.h"
-#include "MainMenuScreen.h"
+#include "../Screens/GameplayScreen.h"
+#include "../Screens/MainMenuScreen.h"
 
 
 class App : public Falcon::IMainGame

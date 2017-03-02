@@ -7,17 +7,18 @@ INCLUDE(FindSDL2 REQUIRED)
 INCLUDE(FindOpenGL REQUIRED)
 INCLUDE(FindGLEW REQUIRED)
 INCLUDE(FindBox2D REQUIRED)
+INCLUDE(FindSDL2_ttf REQUIRED)
 INCLUDE(FindLibNoise REQUIRED)
 
 include_directories(${SunflowerSpaniel_SOURCE_DIR}/include
         ${BOX2D_INCLUDE_DIR} ${SDL2_INCLUDE_DIR}
-        ${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIR} {LIBNOISE_INCLUDE_DIR})
+        ${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIR} ${LIBNOISE_INCLUDE_DIR} ${SDL2_TTF_INCLUDE_DIRS})
 
 set(SOURCE_FILES
-        src/App.cpp
-        src/App.h
-        src/GameplayScreen.cpp
-        src/GameplayScreen.h
+        src/Application/App.cpp
+        src/Application/App.h
+        src/Screens/GameplayScreen.cpp
+        src/Screens/GameplayScreen.h
         src/main.cpp
         include/ImGUI/imgui.cpp
         include/ImGUI/imgui.h
@@ -28,28 +29,22 @@ set(SOURCE_FILES
         include/ImGUI/imgui_demo.cpp
         include/TinyXML2/tinyxml2.cpp
         include/TinyXML2/tinyxml2.h
-        src/Map.cpp src/Map.h
-        src/Tree.cpp
-        src/Tree.h
-        src/EvergreenTree.cpp
-        src/EvergreenTree.h
-        src/OakTree.cpp
-        src/OakTree.h
-        src/Component.h
-        src/GameObject.cpp
-        src/GameObject.h
-        src/BodyComponent.cpp
-        src/BodyComponent.h
-        src/SpriteComponent.cpp
-        src/SpriteComponent.h
-        src/CollisionComponent.cpp
-        src/CollisionComponent.h
-        src/PlayerInputComponent.cpp
-        src/PlayerInputComponent.h src/ObjectFactory.cpp src/ObjectFactory.h src/AnimationComponent.cpp src/AnimationComponent.h src/MainMenuScreen.cpp src/MainMenuScreen.h src/ScreenIndices.h src/DirectionalAnimationComponent.cpp src/DirectionalAnimationComponent.h)
+        src/Map/Map.cpp src/Map/Map.h
+        src/Components/Component.h
+        src/ObjectFactory/GameObject.cpp
+        src/ObjectFactory/GameObject.h
+        src/Components/BodyComponent.cpp
+        src/Components/BodyComponent.h
+        src/Components/SpriteComponent.cpp
+        src/Components/SpriteComponent.h
+        src/Components/CollisionComponent.cpp
+        src/Components/CollisionComponent.h
+        src/Components/PlayerInputComponent.cpp
+        src/Components/PlayerInputComponent.h src/ObjectFactory/ObjectFactory.cpp src/ObjectFactory/ObjectFactory.h src/Components/AnimationComponent.cpp src/Components/AnimationComponent.h src/Screens/MainMenuScreen.cpp src/Screens/MainMenuScreen.h src/Screens/ScreenIndices.h src/Components/DirectionalAnimationComponent.cpp src/Components/DirectionalAnimationComponent.h src/Components/SensorComponent.cpp src/Components/SensorComponent.h src/Messaging/ContactListener.h src/Components/InteractiveComponent.cpp src/Components/InteractiveComponent.h src/Messaging/Messages.h src/Components/SpawnObjectComponent.cpp src/Components/SpawnObjectComponent.h)
 
 add_executable(SunflowerSpaniel ${SOURCE_FILES})
 include(FindPkgConfig)
 find_package(libFalconLatinum REQUIRED)
 include_directories(${FALCONLATINUM_INCLUDE_DIR})
 target_link_libraries(SunflowerSpaniel ${SDL2_LIBRARY} ${OPENGL_LIBRARIES}
-        ${FALCONLATINUM_LIBRARY} ${GLEW_LIBRARIES} ${BOX2D_LIBRARY} ${LIBNOISE_LIBRARY})
+        ${FALCONLATINUM_LIBRARY} ${GLEW_LIBRARIES} ${BOX2D_LIBRARY} ${LIBNOISE_LIBRARY} ${SDL2_TTF_LIBRARIES})

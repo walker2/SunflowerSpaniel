@@ -4,10 +4,11 @@
 
 #include <Falcon/2D/TileSheet.h>
 #include <Falcon/2D/SpriteBatch/SpriteBatch.h>
-#include <libnoise/noise.h>
+#include <noise/noise.h>
 #include <Box2D/Box2D.h>
+#include <random>
 
-#include "GameObject.h"
+#include "../ObjectFactory/GameObject.h"
 
 enum class BIOME { WATER = -1, BEACH, FOREST, JUNGLE, SAVANNAH, ROCKS, SNOW};
 class Map

@@ -4,8 +4,9 @@
 
 #include <vector>
 #include <memory>
-#include "Component.h"
-#include "BodyComponent.h"
+#include "../Components/Component.h"
+#include "../Components/BodyComponent.h"
+#include "../Messaging/Messages.h"
 
 enum class DIRECTION { NONE = 0, LEFT, RIGHT, UP, DOWN};
 
@@ -17,6 +18,7 @@ public:
     {
         attachComponent<BodyComponent>();
     };
+
 
     virtual void update(float deltaTime)
     {
@@ -60,13 +62,26 @@ public:
         return nullptr;
     }
 
+    void send(Message message)
+    {
+        for (auto& component : m_components)
+        {
+            component->receive(message);
+        }
+    }
+
+    void destroy()
+    {
+        m_components.clear();
+    }
+
     DIRECTION getDirection() const { return m_direction; };
     void setDirection(DIRECTION dir) { m_direction = dir; };
 
 protected:
     std::vector<std::shared_ptr<Component>> m_components;
-
     DIRECTION m_direction = DIRECTION::NONE;
+
 };
 
 

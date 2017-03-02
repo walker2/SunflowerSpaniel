@@ -5,7 +5,7 @@
 #include <vector>
 #include <bits/unique_ptr.h>
 #include <Box2D/Box2D.h>
-#include "Map.h"
+#include "../Map/Map.h"
 
 #include "Falcon/GameIntefaces/IGameScreen.h"
 #include "Falcon/GLSL/ShaderProgram.h"
@@ -19,7 +19,7 @@
 
 #include "ImGUI/imgui.h"
 #include "ImGUI/imgui_impl_sdl.h"
-#include "ObjectFactory.h"
+#include "../ObjectFactory/ObjectFactory.h"
 
 
 class GameplayScreen : public Falcon::IGameScreen
@@ -63,7 +63,7 @@ private:
 
     Falcon::BasicLight playerLight;
     Falcon::BasicLight mouseLight;
-    std::vector<std::shared_ptr<GameObject>> m_gameObjects;
+    std::vector<std::shared_ptr<GameObject>>* m_gameObjects;
     std::shared_ptr<GameObject> m_player;
     Map m_map;
     std::unique_ptr<b2World> m_world;

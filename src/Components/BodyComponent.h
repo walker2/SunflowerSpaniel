@@ -16,10 +16,11 @@ public:
     void init(tinyxml2::XMLNode *pNode) override;
     void init(b2World *world, const glm::vec2 position, const glm::vec2 dimensions, b2BodyType bodyType, bool fixedRotation);
 
-    void update(GameObject* obj, float deltaTime) override {};
+    void update(GameObject* obj, float deltaTime) override { m_body->SetUserData(obj); };
 
     // Getters
-    b2Body* getBody() const { return m_body; };
+    b2Body* getBody() { return m_body; };
+    b2World* getWorld() { return m_world; };
     glm::vec2 getPosition();
 
     // Setters

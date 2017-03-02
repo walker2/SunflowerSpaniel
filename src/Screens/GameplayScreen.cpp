@@ -1,9 +1,12 @@
-#include <iostream>
 #include "GameplayScreen.h"
 #include "Falcon/GameIntefaces/IMainGame.h"
-#include "AnimationComponent.h"
+#include "../Components/AnimationComponent.h"
 #include "ScreenIndices.h"
+#include "../Components/SensorComponent.h"
+#include "../Messaging/ContactListener.h"
+#include "../Components/InteractiveComponent.h"
 
+ContactListener listener;
 GameplayScreen::GameplayScreen(Falcon::Window *window)
         : m_window(window)
 {
@@ -55,6 +58,8 @@ void GameplayScreen::onEntry()
     b2Vec2 gravity(0.0f, 0.0f);
     m_world = std::make_unique<b2World>(gravity);
     ObjectFactory::instance().setWorld(m_world.get());
+    m_gameObjects = ObjectFactory::instance().getGameObjects();
+    m_world->SetContactListener(&listener);
 
     // Make a bunch of boxes
     std::mt19937 rng(time(0));
@@ -69,32 +74,32 @@ void GameplayScreen::onEntry()
         auto box = ObjectFactory::instance().createObject("media/Objects/Box.xml");
         box->getComponent<BodyComponent>()->setPosition(glm::vec2(x_dist(rng), y_dist(rng)));
 
-        m_gameObjects.push_back(box);
+        m_gameObjects->push_back(box);
     }
     for (int i = 0; i < 5; i++)
     {
         auto circle = ObjectFactory::instance().createObject("media/Objects/Circle.xml");
         circle->getComponent<BodyComponent>()->setPosition(glm::vec2(x_dist(rng), y_dist(rng)));
-        m_gameObjects.push_back(circle);
+        m_gameObjects->push_back(circle);
     }
 
     m_player = ObjectFactory::instance().createObject("media/Objects/Player.xml");
-    m_gameObjects.push_back(m_player);
+    m_gameObjects->push_back(m_player);
 
-    m_map.init(m_world.get(), 200, 200, "media/Textures/terrain.png", 32, &m_gameObjects);
+    m_map.init(m_world.get(), 200, 200, "media/Textures/terrain.png", 32, m_gameObjects);
     m_map.generateMap();
 }
 
 void GameplayScreen::onExit()
 {
-    m_gameObjects.clear();
+    m_gameObjects->clear();
 
 }
 
 void GameplayScreen::update(float deltaTime)
 {
     checkInput();
-    for (auto& object : m_gameObjects)
+    for (auto& object : *m_gameObjects)
     {
         object->update(deltaTime);
     }
@@ -120,7 +125,7 @@ void GameplayScreen::update(float deltaTime)
     }
 
     m_time += m_darker * 0.001f * deltaTime;
-    playerLight.color.a = static_cast<GLubyte>(m_time * (255 / 0.7));
+    playerLight.color.a = static_cast<GLubyte>(m_time * (200 / 0.7));
 
     if (Falcon::InputManager::instance().isKeyPressed(SDLK_ESCAPE))
     {
@@ -179,12 +184,14 @@ void GameplayScreen::draw(float deltaTime)
 
     m_textureProgram.use();
     m_spriteBatch.begin();
-    for (auto& object : m_gameObjects)
+    for (auto& object : *m_gameObjects)
     {
         auto spriteComponent = object->getComponent<SpriteComponent>();
         auto animationComponent = object->getComponent<AnimationComponent>();
         auto collisionComponent = object->getComponent<CollisionComponent>();
         auto bodyComponent = object->getComponent<BodyComponent>();
+        auto sensorComponent = object->getComponent<SensorComponent>();
+        auto interactiveComponent = object->getComponent<InteractiveComponent>();
 
         if (!collisionComponent)
         {
@@ -210,6 +217,12 @@ void GameplayScreen::draw(float deltaTime)
                 animationComponent->draw(m_spriteBatch, deltaTime);
             }
 
+            if (interactiveComponent)
+            {
+                interactiveComponent->draw(m_spriteBatch, deltaTime);
+            }
+
+
 
             if (m_renderDebug)
             {
@@ -226,6 +239,10 @@ void GameplayScreen::draw(float deltaTime)
                     }
                 }
 
+                if (sensorComponent)
+                {
+                    sensorComponent->drawDebug(m_debugRender, Falcon::Color(0, 255, 0, 255));
+                }
             }
         }
 
@@ -245,7 +262,7 @@ void GameplayScreen::draw(float deltaTime)
 
     bool open = true;
     ImGui::SetNextWindowPos(ImVec2(10,10));
-    if (!ImGui::Begin("Example: Fixed Overlay", &open, ImVec2(0,0), 0.3f, ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoResize|ImGuiWindowFlags_NoMove|ImGuiWindowFlags_NoSavedSettings))
+    if (!ImGui::Begin("Fixed Overlay", &open, ImVec2(0,0), 0.3f, ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoResize|ImGuiWindowFlags_NoMove|ImGuiWindowFlags_NoSavedSettings))
     {
         ImGui::End();
         return;
@@ -271,7 +288,7 @@ void GameplayScreen::draw(float deltaTime)
     ImGui::Text("Player position (%.2f, %.2f)", m_player->getComponent<BodyComponent>()->getPosition().x, m_player->getComponent<BodyComponent>()->getPosition().y);
     ImGui::Text("Time %.5f", m_time);
     ImGui::Text("Player light alpha %i", playerLight.color.a);
-    ImGui::Text("Number of objects in the scene %i", m_gameObjects.size());
+    ImGui::Text("Number of objects in the scene %i", m_gameObjects->size());
     ImGui::Text("RAM usage by app %i kbytes", getRamUsage());
     ImGui::End();
     ImGui::Render();
