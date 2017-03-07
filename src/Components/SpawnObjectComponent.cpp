@@ -2,14 +2,14 @@
 #include "../ObjectFactory/ObjectFactory.h"
 #include <random>
 
-void SpawnObjectComponent::update(GameObject *obj, float deltaTime)
+void SpawnObjectComponent::update(GameObject *obj, float /*deltaTime*/)
 {
     auto body = obj->getComponent<BodyComponent>()->getBody();
     m_position.x = body->GetPosition().x;
     m_position.y = body->GetPosition().y;
 }
 
-void SpawnObjectComponent::init(tinyxml2::XMLNode *pNode)
+void SpawnObjectComponent::init(tinyxml2::XMLNode */*pNode*/)
 {
     m_gameObjects = ObjectFactory::instance().getGameObjects();
 }

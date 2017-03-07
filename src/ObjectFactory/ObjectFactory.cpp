@@ -15,7 +15,7 @@ std::shared_ptr<GameObject> ObjectFactory::createObject(const char *objectResour
         printf("Failed to create object. Error: %i\n", eResult);
         return std::shared_ptr<GameObject>();
     }
-    auto nextObjectID = getNextActorId();
+    //auto nextObjectID = getNextActorId();
     std::shared_ptr<GameObject> obj = std::make_shared<GameObject>();
 
     tinyxml2::XMLNode *pRoot = xmlDoc.FirstChild();

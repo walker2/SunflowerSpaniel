@@ -67,7 +67,7 @@ void CollisionComponent::init(GameObject *obj, b2Shape *shape, const glm::vec2 d
     m_fixture = m_body->CreateFixture(&fixtureDef);
 }
 
-void CollisionComponent::update(GameObject *obj, float deltaTime)
+void CollisionComponent::update(GameObject *obj, float /*deltaTime*/)
 {
     m_body = obj->getComponent<BodyComponent>()->getBody();
 }

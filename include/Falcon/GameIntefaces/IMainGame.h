@@ -26,7 +26,10 @@ namespace Falcon
 
         void onSDLEvent(SDL_Event& event);
 
-        const float getFPS() const { return m_FPS; }
+        float getFPS() const
+	{
+	  return m_FPS;
+	}
 
     protected:
         bool init();

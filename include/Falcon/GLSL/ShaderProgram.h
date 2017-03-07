@@ -8,7 +8,7 @@ namespace Falcon
     class ShaderProgram
     {
     public:
-        ShaderProgram() : m_fragShaderID(0), m_vertShaderID(0), m_programID(0), m_numAttributes(0) {};
+        ShaderProgram() : m_numAttributes(0), m_programID(0), m_vertShaderID(0), m_fragShaderID(0) {};
 
         ~ShaderProgram() {};
 

@@ -68,7 +68,7 @@ void BodyComponent::init(tinyxml2::XMLNode *pNode)
 
 }
 
-void BodyComponent::init(b2World *world, const glm::vec2 position, const glm::vec2 dimensions, b2BodyType bodyType,
+void BodyComponent::init(b2World *world, const glm::vec2 position, const glm::vec2 /*dimensions*/, b2BodyType bodyType,
                          bool fixedRotation)
 {
     b2BodyDef bodyDef;

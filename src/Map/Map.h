@@ -4,7 +4,7 @@
 
 #include <Falcon/2D/TileSheet.h>
 #include <Falcon/2D/SpriteBatch/SpriteBatch.h>
-#include <noise/noise.h>
+#include <noise.h>
 #include <Box2D/Box2D.h>
 #include <random>
 

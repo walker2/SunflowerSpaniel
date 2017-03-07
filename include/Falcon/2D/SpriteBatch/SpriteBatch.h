@@ -48,8 +48,10 @@ namespace Falcon
     class SpriteBatch
     {
     public:
-        SpriteBatch() : m_vao(0), m_vbo(0) {};
-        ~SpriteBatch() {};
+        SpriteBatch() :
+           m_vbo(0),
+	   m_vao(0)
+        {}
 
         void init();
 

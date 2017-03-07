@@ -58,7 +58,7 @@ public:
         }
     }
 
-    void update(GameObject *obj, float deltaTime) override
+    void update(GameObject *obj, float /*deltaTime*/) override
     {
         auto body = obj->getComponent<BodyComponent>()->getBody();
         m_position.x = body->GetPosition().x;
@@ -83,7 +83,7 @@ public:
         }
     }
 
-    virtual void draw(Falcon::SpriteBatch& spriteBatch, float deltaTime)
+    virtual void draw(Falcon::SpriteBatch& spriteBatch, float /*deltaTime*/)
     {
         if (m_visible)
         {

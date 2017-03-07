@@ -19,6 +19,10 @@ public:
         attachComponent<BodyComponent>();
     };
 
+    void destroy()
+    {
+        m_components.clear();
+    }
 
     virtual void update(float deltaTime)
     {
@@ -68,11 +72,6 @@ public:
         {
             component->receive(message);
         }
-    }
-
-    void destroy()
-    {
-        m_components.clear();
     }
 
     DIRECTION getDirection() const { return m_direction; };

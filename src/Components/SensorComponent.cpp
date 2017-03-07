@@ -40,7 +40,7 @@ void SensorComponent::init(tinyxml2::XMLNode *pNode)
     m_fixture = m_body->CreateFixture(&fixtureDef);
 }
 
-void SensorComponent::update(GameObject *obj, float deltaTime)
+void SensorComponent::update(GameObject *obj, float /*deltaTime*/)
 {
     m_body = obj->getComponent<BodyComponent>()->getBody();
 }

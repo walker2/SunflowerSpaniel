@@ -288,7 +288,7 @@ void GameplayScreen::draw(float deltaTime)
     ImGui::Text("Player position (%.2f, %.2f)", m_player->getComponent<BodyComponent>()->getPosition().x, m_player->getComponent<BodyComponent>()->getPosition().y);
     ImGui::Text("Time %.5f", m_time);
     ImGui::Text("Player light alpha %i", playerLight.color.a);
-    ImGui::Text("Number of objects in the scene %i", m_gameObjects->size());
+    ImGui::Text("Number of objects in the scene %li", m_gameObjects->size());
     ImGui::Text("RAM usage by app %i kbytes", getRamUsage());
     ImGui::End();
     ImGui::Render();

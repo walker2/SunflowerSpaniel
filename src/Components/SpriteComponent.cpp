@@ -72,7 +72,7 @@ void SpriteComponent::init(const std::string &filePath, Falcon::Color color, con
     m_spritePos = spritePosition;
 }
 
-void SpriteComponent::update(GameObject *obj, float deltaTime)
+void SpriteComponent::update(GameObject *obj, float /*deltaTime*/)
 {
     auto body = obj->getComponent<BodyComponent>()->getBody();
     m_destRect.x = (body->GetPosition().x - m_spriteDims.x / 2.0f) + m_spritePos.x;

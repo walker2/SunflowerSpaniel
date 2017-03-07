@@ -3,7 +3,7 @@
 #include "../ObjectFactory/ObjectFactory.h"
 #include "Map.h"
 
-void Map::init(b2World *world, int mapWidth, int mapHeight, const std::string tileSheetPath, int tileSize, std::vector<std::shared_ptr<GameObject>>* gameObjects)
+void Map::init(b2World */*world*/, int mapWidth, int mapHeight, const std::string tileSheetPath, int tileSize, std::vector<std::shared_ptr<GameObject>>* gameObjects)
 {
     m_gameObjects = gameObjects;
     m_height = mapHeight;

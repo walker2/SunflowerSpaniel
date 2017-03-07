@@ -15,22 +15,22 @@ FIND_PATH(LIBNOISE_INCLUDE_DIR noise.h
         ~/Library/Frameworks/noise/Headers
         /Library/Frameworks/noise/Headers
         /usr/local/include/noise
-        /usr/local/include/noise
+        /usr/local/include/libnoise
         /usr/local/include
         /usr/include/noise
-        /usr/include/noise
+        /usr/include/libnoise
         /usr/include
         /sw/include/noise
-        /sw/include/noise
+        /sw/include/libnoise
         /sw/include # Fink
         /opt/local/include/noise
-        /opt/local/include/noise
+        /opt/local/include/libnoise
         /opt/local/include # DarwinPorts
         /opt/csw/include/noise
-        /opt/csw/include/noise
+        /opt/csw/include/libnoise
         /opt/csw/include # Blastwave
         /opt/include/noise
-        /opt/include/noise
+        /opt/include/libnoise
         /opt/include
         )
 

@@ -9,8 +9,8 @@ namespace Falcon
     class Camera2D
     {
     public:
-        Camera2D() : m_position(0.0f, 0.0f), m_cameraMatrix(1.0f), m_orthoMatrix(1.0f), m_scale(1.0f), m_shouldUpdate(true),
-                     m_screenWidth(500), m_screenHeight(500) {};
+    Camera2D() : m_screenWidth(500), m_screenHeight(500), m_shouldUpdate(true), m_scale(1.0f), m_position(0.0f, 0.0f), m_cameraMatrix(1.0f), m_orthoMatrix(1.0f)
+                      {};
         ~Camera2D() {};
 
         void init(int screenWidth, int screenHeight);

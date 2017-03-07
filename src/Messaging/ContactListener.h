@@ -10,9 +10,9 @@ class ContactListener : public b2ContactListener
 {
     void BeginContact(b2Contact* contact)
     {
-        GameObject* sensorObject;
-        GameObject* collideObject;
-        if (getSensorAndCollide(contact, sensorObject, collideObject))
+        GameObject* sensorObject = nullptr;
+        GameObject* collideObject = nullptr;
+        if (getSensorAndCollide(contact, sensorObject, collideObject) && (collideObject != nullptr))
         {
             auto interactiveComponent = collideObject->getComponent<InteractiveComponent>();
 
@@ -26,9 +26,9 @@ class ContactListener : public b2ContactListener
 
     void EndContact(b2Contact* contact)
     {
-        GameObject* sensorObject;
-        GameObject* collideObject;
-        if (getSensorAndCollide(contact, sensorObject, collideObject))
+        GameObject* sensorObject = nullptr;
+        GameObject* collideObject = nullptr;
+        if (getSensorAndCollide(contact, sensorObject, collideObject) && (collideObject != nullptr))
         {
             auto interactiveComponent = collideObject->getComponent<InteractiveComponent>();
 
@@ -40,7 +40,7 @@ class ContactListener : public b2ContactListener
     }
 
 private:
-    bool getSensorAndCollide(b2Contact* contact, GameObject*& radarEntity, GameObject*& aircraftEntity)
+    bool getSensorAndCollide(b2Contact* contact, GameObject*& sensorEntity, GameObject*& collideEntity)
     {
         b2Fixture* fixtureA = contact->GetFixtureA();
         b2Fixture* fixtureB = contact->GetFixtureB();
@@ -56,13 +56,13 @@ private:
 
         if (sensorA)
         { //fixtureB must be an enemy aircraft
-            radarEntity = entityA;
-            aircraftEntity = entityB;
+            sensorEntity = entityA;
+            collideEntity = entityB;
         }
         else
         { //fixtureA must be an enemy aircraft
-            radarEntity = entityB;
-            aircraftEntity = entityA;
+            sensorEntity = entityB;
+            collideEntity = entityA;
         }
         return true;
     }

@@ -73,7 +73,7 @@ void AnimationComponent::init(tinyxml2::XMLNode *pNode)
     }
 }
 
-void AnimationComponent::update(GameObject *obj, float deltaTime)
+void AnimationComponent::update(GameObject *obj, float /*deltaTime*/)
 {
     m_body = obj->getComponent<BodyComponent>()->getBody();
     m_destRect.x = (m_body->GetPosition().x - m_spriteDims.x / 2.0f) + m_spritePos.x;
