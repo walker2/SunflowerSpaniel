@@ -1,3 +1,10 @@
 cmake-build-debug/
 cmake-build-release/
 .idea/
+html/
+latex/
+xml/
+Doxyfile
+*.ase
+
+doxygen_log\.txt

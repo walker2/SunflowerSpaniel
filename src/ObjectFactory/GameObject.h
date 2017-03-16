@@ -8,38 +8,46 @@
 #include "../Components/BodyComponent.h"
 #include "../Messaging/Messages.h"
 
-enum class DIRECTION { NONE = 0, LEFT, RIGHT, UP, DOWN};
+enum class DIRECTION
+{
+    NONE = 0, LEFT, RIGHT, UP, DOWN, LEFT_UP, LEFT_DOWN, RIGHT_UP, RIGHT_DOWN
+};
 
+/**
+ * Class that contains a bunch of components. Can add them and update
+ */
 class GameObject
 {
 public:
+    /**
+     * Default constructor: attaches default BodyComponent
+     */
+    GameObject();
 
-    GameObject()
-    {
-        attachComponent<BodyComponent>();
-    };
+    /**
+     * Clears all components
+     */
+    void destroy();
 
-    void destroy()
-    {
-        m_components.clear();
-    }
+    /**
+     * Method that iterates through all components and updates them with deltaTime
+     * @param deltaTime time that have passed since the last frame
+     */
+    virtual void update(float deltaTime);
 
-    virtual void update(float deltaTime)
-    {
-        for (auto& component : m_components)
-        {
-            component->update(this, deltaTime);
-        }
-    };
-
-    template <class T>
+    /**
+     * Method for attaching components to the GameObject
+     * @tparam T Component type
+     * @return shared pointer to created or existing component
+     */
+    template<class T>
     std::shared_ptr<T> attachComponent()
     {
         // Create new component
         std::shared_ptr<T> newComponent = std::make_shared<T>();
 
         // Check if we don't have component of this type
-        for (auto& component : m_components)
+        for (auto &component : m_components)
         {
             if (std::dynamic_pointer_cast<T>(component))
             {
@@ -52,11 +60,16 @@ public:
 
         return newComponent;
     }
-    template <class T>
+    /**
+     * Method for getting component by type
+     * @tparam T Component type
+     * @return shared pointer to existing component or nullptr if there's none
+     */
+    template<class T>
     std::shared_ptr<T> getComponent()
     {
         // Check if we don't have component of this type
-        for (auto& component : m_components)
+        for (auto &component : m_components)
         {
             if (std::dynamic_pointer_cast<T>(component))
             {
@@ -65,24 +78,27 @@ public:
         }
         return nullptr;
     }
+    /**
+     * Sends some message to all component within this gameObject
+     * @param message message
+     */
+    void send(Message message);
 
-    void send(Message message)
-    {
-        for (auto& component : m_components)
-        {
-            component->receive(message);
-        }
-    }
+    DIRECTION getDirection() const
+    { return m_direction; }
 
-    DIRECTION getDirection() const { return m_direction; };
-    void setDirection(DIRECTION dir) { m_direction = dir; };
+    bool isDestroyed()
+    { return m_isDestroyed; }
+
+    void setDirection(DIRECTION dir)
+    { m_direction = dir; }
 
 protected:
-    std::vector<std::shared_ptr<Component>> m_components;
-    DIRECTION m_direction = DIRECTION::NONE;
+    std::vector<std::shared_ptr<Component>> m_components;   ///< A vector of all pointer to components that attached to this GameObject
+    DIRECTION m_direction = DIRECTION::NONE;    ///< Direction gameObject is facing
+    bool m_isDestroyed = false;
 
 };
 
 
-
-#endif //SUNFLOWERSPANIEL_OBJECT_H
+#endif

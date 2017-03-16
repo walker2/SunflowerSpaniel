@@ -10,29 +10,47 @@
 
 #include "../ObjectFactory/GameObject.h"
 
-enum class BIOME { WATER = -1, BEACH, FOREST, JUNGLE, SAVANNAH, ROCKS, SNOW};
+enum class BIOME
+{
+    WATER = -1, BEACH, FOREST, JUNGLE, SAVANNAH, ROCKS, SNOW
+};
+
 class Map
 {
 public:
-    Map() {};
-    ~Map() {};
+    Map()
+    {}
 
-    void init(b2World *world, int mapWidth, int mapHeight, const std::string tileSheetPath, int tileSize, std::vector<std::shared_ptr<GameObject>>* gameObjects);
+    ~Map()
+    {}
+
+    void init(b2World *world, int mapWidth, int mapHeight, const std::string tileSheetPath, int tileSize,
+              std::vector<std::shared_ptr<GameObject>> *gameObjects);
+
     void generateMap();
-    void drawBackground();
-    void drawForeground();
-    void dispose() { m_value.clear(); };
 
-    bool isGenerated() { return m_isGenerated; };
+    void drawBackground();
+
+    void drawForeground();
+
+    void dispose()
+    { m_value.clear(); }
+
+    bool isGenerated()
+    { return m_isGenerated; }
 
 private:
     double noise(double nx, double ny);
+
     int calculateTileIndex(BIOME sTL, BIOME sT, BIOME sTR,
                            BIOME sL, BIOME sR, BIOME sBL,
                            BIOME sB, BIOME sBR, BIOME trans);
+
     BIOME biome(double val);
-    void generateWater(glm::vec4& posVec, double val);
-    void generateMisc(glm::vec4& posVec, int startingTile);
+
+    void generateWater(glm::vec4 &posVec, double val);
+
+    void generateMisc(glm::vec4 &posVec, int startingTile);
 
 
 private:
@@ -47,7 +65,7 @@ private:
     Falcon::SpriteBatch m_layerOneSpriteBatch;
     Falcon::SpriteBatch m_layerTwoSpriteBatch;
 
-    std::vector<std::shared_ptr<GameObject>>* m_gameObjects;
+    std::vector<std::shared_ptr<GameObject>> *m_gameObjects;
     noise::module::Perlin m_gen;
     std::vector<std::vector<double>> m_value;
     std::mt19937 m_rng;

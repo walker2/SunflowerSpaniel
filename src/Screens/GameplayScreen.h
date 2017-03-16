@@ -21,31 +21,83 @@
 #include "ImGUI/imgui_impl_sdl.h"
 #include "../ObjectFactory/ObjectFactory.h"
 
-
+/**
+ * GameScreen that implements GameplayScreen in Application
+ */
 class GameplayScreen : public Falcon::IGameScreen
 {
 public:
-    GameplayScreen(Falcon::Window* window);
-    ~GameplayScreen() {};
+    /**
+    * Constructor, sets m_screenIndex and m_window
+    * @param window a pointer to a window the MainMenu should be displayed
+    */
+    GameplayScreen(Falcon::Window *window);
+
+    ~GameplayScreen()
+    {}
+
+    /**
+    * Gets a next screen index
+    * @return next screen index
+    */
     int getNextScreenIndex() const override;
 
+    /**
+     * Gets a previous screen index
+     * @return previous screen index
+     */
     int getPrevScreenIndex() const override;
 
+    /**
+     * Called once, when the Screen are created
+     */
     void create() override;
 
+    /**
+     * Called once, when the Screen are destroyed
+     */
     void destroy() override;
 
+    /**
+     * Called every time we switch to the this Screen
+     */
     void onEntry() override;
 
+    /**
+    * Called every time we switch from this screen to another
+    */
     void onExit() override;
 
+    /**
+     * Update function that called every frame in Main Cycle
+     * @param deltaTime time that have passed since the last frame
+     */
     void update(float deltaTime) override;
 
+    /**
+     * Draw function that called every frame in Main Cycle
+     * @param deltaTime time that have passed since the last frame
+     */
     void draw(float deltaTime) override;
 
 private:
+    /**
+     * Function that pulls SDL_Events from m_game
+     */
     void checkInput();
-    void compileShader(Falcon::ShaderProgram& shaderProgram, const std::string& vertPath, const std::string& fragPath);
+
+    /**
+    * Function that compiles vertex and fragment shader from their paths
+    * @param shaderProgram program we should compile with
+    * @param vertPath path to the vertex shader
+    * @param fragPath path to the fragment shader
+    */
+    void compileShader(Falcon::ShaderProgram &shaderProgram, const std::string &vertPath, const std::string &fragPath);
+
+    /**
+     * Helper function that returns RAM used by Application
+     * @return RAM used by Application
+     */
     int getRamUsage();
 
     bool m_renderDebug = false;
@@ -53,20 +105,20 @@ private:
     float m_time = 0.0f;
     int m_darker = 1;
 
-    Falcon::ShaderProgram m_textureProgram;
-    Falcon::ShaderProgram m_lightProgram;
-    Falcon::Camera2D m_camera;
-    Falcon::SpriteBatch m_spriteBatch;
-    Falcon::SpriteBatch m_lightSpriteBatch;
-    Falcon::Window* m_window;
-    Falcon::DebugRenderer m_debugRender;
-
+    Falcon::ShaderProgram m_textureProgram; ///< Shader program for texture shader compiling
+    Falcon::ShaderProgram m_lightProgram;   ///< Shader program for light shader compiling
+    Falcon::Camera2D m_camera;              ///< Camera for scene drawing
+    Falcon::SpriteBatch m_spriteBatch;      ///< A batch we draw to all gameObjects
+    Falcon::SpriteBatch m_lightSpriteBatch; ///< A batch we draw to all lights
+    Falcon::Window *m_window;               ///< A window we display to
+    Falcon::DebugRenderer m_debugRender;    ///< Special render type for Debug purposes
     Falcon::BasicLight playerLight;
     Falcon::BasicLight mouseLight;
-    std::vector<std::shared_ptr<GameObject>>* m_gameObjects;
-    std::shared_ptr<GameObject> m_player;
-    Map m_map;
-    std::unique_ptr<b2World> m_world;
+
+    std::vector<std::shared_ptr<GameObject>> *m_gameObjects;    ///< Vector of all gameObjects on scene
+    std::shared_ptr<GameObject> m_player;   ///< Player gameObject handle
+    Map m_map;                              ///< Map object that draws all background sprites
+    std::unique_ptr<b2World> m_world;       ///< World for physics simulation
 };
 
 

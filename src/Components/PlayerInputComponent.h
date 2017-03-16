@@ -12,7 +12,7 @@
 class PlayerInputComponent : public Component
 {
 public:
-    PlayerInputComponent() {};
+    PlayerInputComponent() {}
 
     void init(tinyxml2::XMLNode *pNode) override;
 

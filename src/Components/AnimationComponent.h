@@ -12,7 +12,7 @@ public:
 
     void update(GameObject *obj, float deltaTime) override;
 
-    virtual void draw(Falcon::SpriteBatch& spriteBatch, float deltaTime);
+    virtual void draw(Falcon::SpriteBatch &spriteBatch, float deltaTime);
 
     void setTileSheet(const std::string &filePath);
 
@@ -22,7 +22,7 @@ protected:
     int m_frameCount = 1;
 
     DIRECTION m_direction = DIRECTION::NONE;
-    b2Body* m_body = nullptr;
+    b2Body *m_body = nullptr;
     Falcon::TileSheet m_tileSheet;
     glm::vec4 m_destRect;
     glm::vec2 m_spriteDims;

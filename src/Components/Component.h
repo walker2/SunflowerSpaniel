@@ -5,19 +5,25 @@
 #include "../Messaging/Messages.h"
 
 class GameObject;
+
 class Component
 {
 public:
     Component()
     {}
 
-    virtual void update(GameObject* obj, float deltaTime) = 0;
-    virtual void init(tinyxml2::XMLNode* pNode) = 0;
+    virtual void update(GameObject *obj, float deltaTime) = 0;
+
+    virtual void init(tinyxml2::XMLNode *pNode) = 0;
+
     virtual void receive(Message /*message*/)
     {}
 
+    virtual void destroy()
+    {}
+
 protected:
-    GameObject* obj;
+    GameObject *obj;
 };
 
 

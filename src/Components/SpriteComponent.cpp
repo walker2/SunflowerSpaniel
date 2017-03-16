@@ -88,8 +88,7 @@ void SpriteComponent::draw(Falcon::SpriteBatch &spriteBatch)
     {
         spriteBatch.draw(m_destRect, m_tileSheet.getUVs(m_tileIndex), m_tileSheet.texture.id, 0.0f,
                          Falcon::Color(255, 255, 225, 255), m_angle);
-    }
-    else
+    } else
     {
         glm::vec4 uvRect(0.0, 0.0, 1.0, 1.0);
         spriteBatch.draw(m_destRect, uvRect, m_tileSheet.texture.id, 0.0f, m_color, m_angle);

@@ -11,28 +11,34 @@
 class SpriteComponent : public Component
 {
 public:
-    SpriteComponent() {};
+    SpriteComponent()
+    {}
 
     void init(tinyxml2::XMLNode *pNode) override;
 
-    void init(const std::string& filePath,
+    void init(const std::string &filePath,
               Falcon::Color color,
               const glm::vec2 dimensions,
               const glm::vec2 spritePosition,
               int spriteID = 0);
 
-    void update(GameObject* obj, float deltaTime);
+    void update(GameObject *obj, float deltaTime);
 
-    void draw(Falcon::SpriteBatch& spriteBatch);
+    void draw(Falcon::SpriteBatch &spriteBatch);
 
 
     // Getters
-    int getTileIndex() { return m_tileIndex; };
-    glm::vec2 getDimensions() { return m_spriteDims; }
+    int getTileIndex()
+    { return m_tileIndex; }
+
+    glm::vec2 getDimensions()
+    { return m_spriteDims; }
 
     // Setters
-    void setTileSheet(const std::string& filePath);
-    void setTileIndex(int tileIndex) { m_tileIndex = tileIndex; };
+    void setTileSheet(const std::string &filePath);
+
+    void setTileIndex(int tileIndex)
+    { m_tileIndex = tileIndex; }
 
 
 protected:

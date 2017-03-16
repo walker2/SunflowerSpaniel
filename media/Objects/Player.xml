@@ -1,6 +1,6 @@
 <Object>
     <BodyComponent>
-        <Position x="15" y="10"/>
+        <Position x="500" y="500"/>
         <BodyType>Dynamic</BodyType>
         <FixedRotation>true</FixedRotation>
         <LinearDamping>2</LinearDamping>
@@ -30,7 +30,7 @@
         <DownKeyID>s</DownKeyID>
     </PlayerInputComponent>
 
-    <DirectionalAnimationComponent>
+    <!-- <DirectionalAnimationComponent>
         <Texture tileSize="32">media/Textures/Wolfpack.png</Texture>
         <Color r="255" g="255" b="255" a="255"/>
         <Dimensions height="4" width="4"/>
@@ -39,5 +39,14 @@
         <AnimationSpeed>0.1</AnimationSpeed>
         <FrameCount>4</FrameCount>
     </DirectionalAnimationComponent>
-
+    -->
+    <DirectionalAnimationComponent>
+        <Texture tileSize="64">media/Textures/DogWalkingAnimation.png</Texture>
+        <Color r="255" g="255" b="255" a="255"/>
+        <Dimensions height="6" width="6"/>
+        <Position x="0" y="1"/>
+        <SpriteID left="108" right="120" up="96" down="132" leftUp="48" leftDown="72" rightUp="60" rightDown="84">132</SpriteID>
+        <AnimationSpeed>0.2</AnimationSpeed>
+        <FrameCount>12</FrameCount>
+    </DirectionalAnimationComponent>
 </Object>

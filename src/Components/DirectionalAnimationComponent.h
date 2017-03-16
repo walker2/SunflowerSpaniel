@@ -16,6 +16,10 @@ private:
     int m_tileIndexRightDir = -1;
     int m_tileIndexUpDir = -1;
     int m_tileIndexDownDir = -1;
+    int m_tileIndexLeftUpDir = -1;
+    int m_tileIndexLeftDownDir = -1;
+    int m_tileIndexRightUpDir = -1;
+    int m_tileIndexRightDownDir = -1;
 };
 
 

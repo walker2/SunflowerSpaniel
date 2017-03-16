@@ -82,8 +82,7 @@ void CollisionComponent::drawDebug(Falcon::DebugRenderer &debugRenderer, Falcon:
         destRect.z = m_dimensions.x;
         destRect.w = m_dimensions.y;
         debugRenderer.drawBox(destRect, color, m_body->GetAngle());
-    }
-    else if (m_fixture->GetShape()->GetType() == b2Shape::Type::e_circle)
+    } else if (m_fixture->GetShape()->GetType() == b2Shape::Type::e_circle)
     {
         glm::vec4 destRect;
         destRect.x = m_body->GetPosition().x - m_dimensions.x / 2.0f;

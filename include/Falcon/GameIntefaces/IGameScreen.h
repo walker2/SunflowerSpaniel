@@ -51,7 +51,7 @@ namespace Falcon
     protected:
         ScreenState m_currentState = ScreenState::NONE;
         IMainGame* m_game = nullptr;
-        int m_screenIndex = SCREEN_INDEX_NO_SCREEN; ///<
+        int m_screenIndex = SCREEN_INDEX_NO_SCREEN;
     };
 }
 

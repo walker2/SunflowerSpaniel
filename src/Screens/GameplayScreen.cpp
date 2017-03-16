@@ -4,9 +4,9 @@
 #include "ScreenIndices.h"
 #include "../Components/SensorComponent.h"
 #include "../Messaging/ContactListener.h"
-#include "../Components/InteractiveComponent.h"
 
 ContactListener listener;
+
 GameplayScreen::GameplayScreen(Falcon::Window *window)
         : m_window(window)
 {
@@ -34,8 +34,10 @@ void GameplayScreen::create()
     m_lightSpriteBatch.init();
 
     // Compile texture and light shader
-    compileShader(m_textureProgram, "include/Falcon/Shaders/textureShading.vert", "include/Falcon/Shaders/textureShading.frag");
-    compileShader(m_lightProgram, "include/Falcon/Shaders/lightShading.vert", "include/Falcon/Shaders/lightShading.frag");
+    compileShader(m_textureProgram, "include/Falcon/Shaders/textureShading.vert",
+                  "include/Falcon/Shaders/textureShading.frag");
+    compileShader(m_lightProgram, "include/Falcon/Shaders/lightShading.vert",
+                  "include/Falcon/Shaders/lightShading.frag");
 
     // Init camera
     m_camera.init(m_window->getScreenWidth(), m_window->getScreenHeight());
@@ -61,28 +63,6 @@ void GameplayScreen::onEntry()
     m_gameObjects = ObjectFactory::instance().getGameObjects();
     m_world->SetContactListener(&listener);
 
-    // Make a bunch of boxes
-    std::mt19937 rng(time(0));
-    std::uniform_real_distribution<float> x_dist(-10.0f, 10.0f);
-    std::uniform_real_distribution<float> y_dist(-15.0f, 15.0f);
-    std::uniform_real_distribution<float> size(1.0f, 4.0f);
-
-    const int numBoxes = 50;
-
-    for (int i = 0; i < numBoxes; i++)
-    {
-        auto box = ObjectFactory::instance().createObject("media/Objects/Box.xml");
-        box->getComponent<BodyComponent>()->setPosition(glm::vec2(x_dist(rng), y_dist(rng)));
-
-        m_gameObjects->push_back(box);
-    }
-    for (int i = 0; i < 5; i++)
-    {
-        auto circle = ObjectFactory::instance().createObject("media/Objects/Circle.xml");
-        circle->getComponent<BodyComponent>()->setPosition(glm::vec2(x_dist(rng), y_dist(rng)));
-        m_gameObjects->push_back(circle);
-    }
-
     m_player = ObjectFactory::instance().createObject("media/Objects/Player.xml");
     m_gameObjects->push_back(m_player);
 
@@ -93,18 +73,34 @@ void GameplayScreen::onEntry()
 void GameplayScreen::onExit()
 {
     m_gameObjects->clear();
-
+    m_map.dispose();
 }
 
 void GameplayScreen::update(float deltaTime)
 {
     checkInput();
-    for (auto& object : *m_gameObjects)
+    for (auto &object : *m_gameObjects)
     {
-        object->update(deltaTime);
+        if (!object->isDestroyed())
+        {
+            object->update(deltaTime);
+        }
     }
     // TODO: MAYBE A CAMERA FOLLOW COMPONENT?
-    m_camera.setPosition(m_player->getComponent<BodyComponent>()->getPosition());
+
+    auto playerPos = m_player->getComponent<BodyComponent>()->getPosition();
+
+    glm::vec2 newCamPos = playerPos;
+    if (playerPos.x <= 43 || playerPos.x >= 556)
+    {
+        newCamPos.x = m_camera.getPosition().x;
+    }
+    if (playerPos.y <= 26 || playerPos.y >= 574)
+    {
+        newCamPos.y = m_camera.getPosition().y;
+    }
+
+    m_camera.setPosition(newCamPos);
     m_camera.update();
 
     // TODO: MAKE A LIGHT COMPONENT
@@ -112,14 +108,15 @@ void GameplayScreen::update(float deltaTime)
     glm::vec2 mousePos = m_camera.screenToWorld(Falcon::InputManager::instance().getMouseCoords());
     mouseLight.position = mousePos;
 
+
+
     // Update the physics simulation
     m_world->Step(1.0f / 60.0f, 3, 2);
 
     if (m_time < 0.0f)
     {
         m_darker = 1;
-    }
-    else if (m_time > 0.7f)
+    } else if (m_time > 0.7f)
     {
         m_darker = -1;
     }
@@ -132,6 +129,8 @@ void GameplayScreen::update(float deltaTime)
         m_currentState = Falcon::ScreenState::CHANGE_PREV;
     }
 
+
+    ObjectFactory::instance().deleteGameObjects();
 }
 
 void GameplayScreen::draw(float deltaTime)
@@ -149,7 +148,7 @@ void GameplayScreen::draw(float deltaTime)
 
     // Upload color uniform
     glm::vec4 color(1.0 - m_time, 1.0 - m_time, 1.0 - m_time / 2, 1.0);
-    GLint colorUniform =  m_textureProgram.getUniformLocation("color");
+    GLint colorUniform = m_textureProgram.getUniformLocation("color");
     glUniform4fv(colorUniform, 1, &color[0]);
 
     // Camera matrix
@@ -184,7 +183,7 @@ void GameplayScreen::draw(float deltaTime)
 
     m_textureProgram.use();
     m_spriteBatch.begin();
-    for (auto& object : *m_gameObjects)
+    for (auto &object : *m_gameObjects)
     {
         auto spriteComponent = object->getComponent<SpriteComponent>();
         auto animationComponent = object->getComponent<AnimationComponent>();
@@ -204,8 +203,7 @@ void GameplayScreen::draw(float deltaTime)
             {
                 animationComponent->draw(m_spriteBatch, deltaTime);
             }
-        }
-        else if (m_camera.isBoxVisible(bodyComponent->getPosition(), collisionComponent->getDimensions()))
+        } else if (m_camera.isBoxVisible(bodyComponent->getPosition(), collisionComponent->getDimensions()))
         {
             if (spriteComponent)
             {
@@ -223,7 +221,6 @@ void GameplayScreen::draw(float deltaTime)
             }
 
 
-
             if (m_renderDebug)
             {
                 if (collisionComponent)
@@ -231,8 +228,7 @@ void GameplayScreen::draw(float deltaTime)
                     if (bodyComponent->getBody()->GetType() == b2_dynamicBody)
                     {
                         collisionComponent->drawDebug(m_debugRender, Falcon::Color(255, 0, 255, 255));
-                    }
-                    else
+                    } else
                     {
 
                         collisionComponent->drawDebug(m_debugRender, Falcon::Color(255, 255, 0, 255));
@@ -261,8 +257,10 @@ void GameplayScreen::draw(float deltaTime)
 
 
     bool open = true;
-    ImGui::SetNextWindowPos(ImVec2(10,10));
-    if (!ImGui::Begin("Fixed Overlay", &open, ImVec2(0,0), 0.3f, ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoResize|ImGuiWindowFlags_NoMove|ImGuiWindowFlags_NoSavedSettings))
+    ImGui::SetNextWindowPos(ImVec2(10, 10));
+    if (!ImGui::Begin("Fixed Overlay", &open, ImVec2(0, 0), 0.3f,
+                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
+                      ImGuiWindowFlags_NoSavedSettings))
     {
         ImGui::End();
         return;
@@ -283,9 +281,13 @@ void GameplayScreen::draw(float deltaTime)
         mouseLight.color.b = static_cast<GLubyte>(color(rng));
     }
     ImGui::Separator();
-    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-    ImGui::Text("Mouse position (%.2f, %.2f)", m_camera.screenToWorld(Falcon::InputManager::instance().getMouseCoords()).x, m_camera.screenToWorld(Falcon::InputManager::instance().getMouseCoords()).y);
-    ImGui::Text("Player position (%.2f, %.2f)", m_player->getComponent<BodyComponent>()->getPosition().x, m_player->getComponent<BodyComponent>()->getPosition().y);
+    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,
+                ImGui::GetIO().Framerate);
+    ImGui::Text("Mouse position (%.2f, %.2f)",
+                m_camera.screenToWorld(Falcon::InputManager::instance().getMouseCoords()).x,
+                m_camera.screenToWorld(Falcon::InputManager::instance().getMouseCoords()).y);
+    ImGui::Text("Player position (%.2f, %.2f)", m_player->getComponent<BodyComponent>()->getPosition().x,
+                m_player->getComponent<BodyComponent>()->getPosition().y);
     ImGui::Text("Time %.5f", m_time);
     ImGui::Text("Player light alpha %i", playerLight.color.a);
     ImGui::Text("Number of objects in the scene %li", m_gameObjects->size());
@@ -295,25 +297,27 @@ void GameplayScreen::draw(float deltaTime)
 
 }
 
-int parseLine(char* line)
+int parseLine(char *line)
 {
     // This assumes that a digit will be found and the line ends in " Kb".
-    int i = strlen(line);
-    const char* p = line;
-    while (*p <'0' || *p > '9') p++;
-    line[i-3] = '\0';
+    int i = (int) strlen(line);
+    const char *p = line;
+    while (*p < '0' || *p > '9') p++;
+    line[i - 3] = '\0';
     i = atoi(p);
     return i;
 }
 
 int GameplayScreen::getRamUsage()
 { //Note: this value is in KB!
-    FILE* file = fopen("/proc/self/status", "r");
+    FILE *file = fopen("/proc/self/status", "r");
     int result = -1;
     char line[128];
 
-    while (fgets(line, 128, file) != NULL){
-        if (strncmp(line, "VmRSS:", 6) == 0){
+    while (fgets(line, 128, file) != NULL)
+    {
+        if (strncmp(line, "VmRSS:", 6) == 0)
+        {
             result = parseLine(line);
             break;
         }
@@ -325,14 +329,15 @@ int GameplayScreen::getRamUsage()
 void GameplayScreen::checkInput()
 {
     SDL_Event e;
-    while(SDL_PollEvent(&e))
+    while (SDL_PollEvent(&e))
     {
         m_game->onSDLEvent(e);
         ImGui_ImplSdl_ProcessEvent(&e);
     }
 }
 
-void GameplayScreen::compileShader(Falcon::ShaderProgram& shaderProgram, const std::string &vertPath, const std::string &fragPath)
+void GameplayScreen::compileShader(Falcon::ShaderProgram &shaderProgram, const std::string &vertPath,
+                                   const std::string &fragPath)
 {
     shaderProgram.compileShaders(vertPath, fragPath);
     shaderProgram.addAttribute("vertexPosition");

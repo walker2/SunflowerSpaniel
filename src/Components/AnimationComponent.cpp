@@ -96,11 +96,10 @@ void AnimationComponent::draw(Falcon::SpriteBatch &spriteBatch, float deltaTime)
         m_animTime += m_animSpeed * deltaTime;
 
         // Apply animation
-        tileIndex = tileIndex + (int)m_animTime % m_frameCount;
+        tileIndex = tileIndex + (int) m_animTime % m_frameCount;
 
         spriteBatch.draw(m_destRect, m_tileSheet.getUVs(tileIndex), m_tileSheet.texture.id, 0.0f, m_color, m_angle);
-    }
-    else
+    } else
     {
         glm::vec4 uvRect(0.0, 0.0, 1.0, 1.0);
         spriteBatch.draw(m_destRect, uvRect, m_tileSheet.texture.id, 0.0f, m_color, m_angle);

@@ -27,7 +27,8 @@ void MainMenuScreen::create()
 
     //Init spritebatch
     m_spriteBatch.init();
-    compileShader(m_textureProgram, "include/Falcon/Shaders/textureShading.vert", "include/Falcon/Shaders/textureShading.frag");
+    compileShader(m_textureProgram, "include/Falcon/Shaders/textureShading.vert",
+                  "include/Falcon/Shaders/textureShading.frag");
 
     // Init camera
     m_camera.init(m_window->getScreenWidth(), m_window->getScreenHeight());
@@ -68,7 +69,7 @@ void MainMenuScreen::update(float deltaTime)
     checkInput();
     m_camera.update();
 
-    for (auto& object : m_gameObjects)
+    for (auto &object : m_gameObjects)
     {
         object->update(deltaTime);
     }
@@ -90,7 +91,7 @@ void MainMenuScreen::draw(float deltaTime)
 
     // Upload color uniform
     glm::vec4 color(1.0, 1.0, 1.0, 1.0);
-    GLint colorUniform =  m_textureProgram.getUniformLocation("color");
+    GLint colorUniform = m_textureProgram.getUniformLocation("color");
     glUniform4fv(colorUniform, 1, &color[0]);
 
     // Camera matrix
@@ -99,7 +100,7 @@ void MainMenuScreen::draw(float deltaTime)
     glUniformMatrix4fv(pUniform, 1, GL_FALSE, &projectionMatrix[0][0]);
 
     m_spriteBatch.begin();
-    for (auto& object : m_gameObjects)
+    for (auto &object : m_gameObjects)
     {
         auto spriteComponent = object->getComponent<SpriteComponent>();
         auto animationComponent = object->getComponent<AnimationComponent>();
@@ -123,18 +124,22 @@ void MainMenuScreen::draw(float deltaTime)
     bool open = true;
 
     ImGui::SetNextWindowPos(ImVec2(832, 264));
-    if (!ImGui::Begin("Overlay", &open, ImVec2(0,0), 0.0f, ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoResize|ImGuiWindowFlags_NoMove|ImGuiWindowFlags_NoSavedSettings))
+    if (!ImGui::Begin("Overlay", &open, ImVec2(0, 0), 0.0f,
+                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
+                      ImGuiWindowFlags_NoSavedSettings))
     {
         ImGui::End();
         return;
     }
-    ImTextureID textureIDNewGame = reinterpret_cast<void*>(Falcon::ResourceManager::getTexture("media/Textures/ButtonNewGame256x64.png").id);
-    ImTextureID textureIDExit = reinterpret_cast<void*>(Falcon::ResourceManager::getTexture("media/Textures/ButtonExit256x64.png").id);
-    if (ImGui::ImageButton(textureIDNewGame, ImVec2(256, 64), ImVec2(0,0), ImVec2(1, 1), 2, ImColor(0,0,0,255)))
+    ImTextureID textureIDNewGame = reinterpret_cast<void *>(Falcon::ResourceManager::getTexture(
+            "media/Textures/ButtonNewGame256x64.png").id);
+    ImTextureID textureIDExit = reinterpret_cast<void *>(Falcon::ResourceManager::getTexture(
+            "media/Textures/ButtonExit256x64.png").id);
+    if (ImGui::ImageButton(textureIDNewGame, ImVec2(256, 64), ImVec2(0, 0), ImVec2(1, 1), 2, ImColor(0, 0, 0, 255)))
     {
         m_currentState = Falcon::ScreenState::CHANGE_NEXT;
     }
-    if (ImGui::ImageButton(textureIDExit, ImVec2(256, 64), ImVec2(0,0), ImVec2(1, 1), 2, ImColor(0,0,0,255)))
+    if (ImGui::ImageButton(textureIDExit, ImVec2(256, 64), ImVec2(0, 0), ImVec2(1, 1), 2, ImColor(0, 0, 0, 255)))
     {
         m_currentState = Falcon::ScreenState::EXIT_APP;
     }
@@ -156,7 +161,7 @@ void MainMenuScreen::compileShader(Falcon::ShaderProgram &shaderProgram, const s
 void MainMenuScreen::checkInput()
 {
     SDL_Event e;
-    while(SDL_PollEvent(&e))
+    while (SDL_PollEvent(&e))
     {
         m_game->onSDLEvent(e);
     }

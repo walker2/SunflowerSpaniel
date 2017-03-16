@@ -17,8 +17,7 @@ void BodyComponent::init(tinyxml2::XMLNode *pNode)
         pPositionElement->QueryFloatAttribute("x", &x);
         pPositionElement->QueryFloatAttribute("y", &y);
         bodyDef.position.Set(x, y);
-    }
-    else
+    } else
     {
         bodyDef.position.Set(x, y);
     }
@@ -30,17 +29,14 @@ void BodyComponent::init(tinyxml2::XMLNode *pNode)
         if (type == "Dynamic")
         {
             bodyDef.type = b2BodyType::b2_dynamicBody;
-        }
-        else if (type  == "Kinematic")
+        } else if (type == "Kinematic")
         {
             bodyDef.type = b2BodyType::b2_kinematicBody;
-        }
-        else
+        } else
         {
             bodyDef.type = b2BodyType::b2_staticBody;
         }
-    }
-    else
+    } else
     {
         bodyDef.type = b2BodyType::b2_dynamicBody;
     }
@@ -51,8 +47,7 @@ void BodyComponent::init(tinyxml2::XMLNode *pNode)
     {
         pRotationElement->QueryBoolText(&fixedRotation);
         bodyDef.fixedRotation = fixedRotation;
-    }
-    else
+    } else
     {
         bodyDef.fixedRotation = fixedRotation;
     }

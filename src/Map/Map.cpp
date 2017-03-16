@@ -3,7 +3,8 @@
 #include "../ObjectFactory/ObjectFactory.h"
 #include "Map.h"
 
-void Map::init(b2World */*world*/, int mapWidth, int mapHeight, const std::string tileSheetPath, int tileSize, std::vector<std::shared_ptr<GameObject>>* gameObjects)
+void Map::init(b2World */*world*/, int mapWidth, int mapHeight, const std::string tileSheetPath, int tileSize,
+               std::vector<std::shared_ptr<GameObject>> *gameObjects)
 {
     m_gameObjects = gameObjects;
     m_height = mapHeight;
@@ -16,7 +17,7 @@ void Map::init(b2World */*world*/, int mapWidth, int mapHeight, const std::strin
     m_tileSheet.init(texture, glm::ivec2(texture.width / tileSize, texture.height / tileSize));
     m_tileSheet2.init(transTexture, glm::ivec2(transTexture.width / tileSize, transTexture.height / tileSize));
     m_value.resize(m_height);
-    for (auto& val : m_value)
+    for (auto &val : m_value)
     {
         val.resize(m_width);
     }
@@ -29,13 +30,13 @@ void Map::generateMap()
         for (double x = 0; x < m_width; x++)
         {
             double nx = x / m_width - 0.5,
-                   ny = y / m_height - 0.5;
-            double e = (1.00 * noise( 1 * nx,  1 * ny)
-                     + 0.50 * noise( 2 * nx,  2 * ny)
-                     + 0.25 * noise( 4 * nx,  4 * ny)
-                     + 0.13 * noise( 8 * nx,  8 * ny)
-                     + 0.06 * noise(16 * nx, 16 * ny)
-                     + 0.03 * noise(32 * nx, 32 * ny));
+                    ny = y / m_height - 0.5;
+            double e = (1.00 * noise(1 * nx, 1 * ny)
+                        + 0.50 * noise(2 * nx, 2 * ny)
+                        + 0.25 * noise(4 * nx, 4 * ny)
+                        + 0.13 * noise(8 * nx, 8 * ny)
+                        + 0.06 * noise(16 * nx, 16 * ny)
+                        + 0.03 * noise(32 * nx, 32 * ny));
             e /= (1.00 + 0.50 + 0.25 + 0.13);
             m_value[x][y] = e;
         }
@@ -68,10 +69,10 @@ void Map::generateMap()
             if (sM == BIOME::WATER)
             {
                 generateWater(posVec, tile);
-            }
-            else
+            } else
             {
-                int index = calculateTileIndex(sTL, sT, sTR, sL, sR, sBL, sB, sBR, static_cast<BIOME>(static_cast<int>(sM) - 1));
+                int index = calculateTileIndex(sTL, sT, sTR, sL, sR, sBL, sB, sBR,
+                                               static_cast<BIOME>(static_cast<int>(sM) - 1));
                 int startTile = (992 - static_cast<int>(sM) * 32);
                 m_layerOneSpriteBatch.draw(
                         posVec,
@@ -92,9 +93,9 @@ void Map::generateMap()
     m_layerTwoSpriteBatch.init();
     m_layerTwoSpriteBatch.begin();
     // Generate second layer (trees)
-    for (int y = m_height - 1; y > 0 ; y--)
+    for (int y = m_height - 1; y > 0; y--)
     {
-        for (int x = m_width - 1; x > 0 ; x--)
+        for (int x = m_width - 1; x > 0; x--)
         {
             double tile = m_value[y][x];
             glm::vec4 posVec(x * m_tileSize, y * m_tileSize, m_tileSize, m_tileSize);
@@ -115,7 +116,7 @@ void Map::generateMap()
                         if (chance(m_rng) > 0.5f)
                         {
                             // Generate the oak
-                            auto oak = ObjectFactory::instance().createObject("media/Objects/Oak.xml");
+                            std::shared_ptr<GameObject> oak = ObjectFactory::instance().createObject("media/Objects/Oak.xml");
                             oak->getComponent<BodyComponent>()->setPosition(glm::vec2(posVec.x, posVec.y));
                             m_gameObjects->push_back(oak);
                         }
@@ -129,7 +130,7 @@ void Map::generateMap()
                         if (chance(m_rng) > 0.5f)
                         {
                             // Generate evergreen
-                            auto evergreen = ObjectFactory::instance().createObject("media/Objects/Evergreen.xml");
+                            std::shared_ptr<GameObject> evergreen = ObjectFactory::instance().createObject("media/Objects/Evergreen.xml");
                             evergreen->getComponent<BodyComponent>()->setPosition(glm::vec2(posVec.x, posVec.y));
                             m_gameObjects->push_back(evergreen);
                         }
@@ -152,7 +153,7 @@ void Map::generateMap()
     m_isGenerated = true;
 }
 
-void Map::generateWater(glm::vec4& posVec, double val)
+void Map::generateWater(glm::vec4 &posVec, double val)
 {
     std::uniform_real_distribution<float> chance(0.0f, 1.0f);
 
@@ -164,8 +165,7 @@ void Map::generateWater(glm::vec4& posVec, double val)
         diff = (0.35 - val) * 4;
         color.setColor(m_colorTint.r * diff, m_colorTint.g * diff, m_colorTint.b);
         color1.setColor(m_colorTint.r - color.r, m_colorTint.g - color.g, m_colorTint.b);
-    }
-    else
+    } else
     {
         color1.setColor(0, 0, 255);
     }
@@ -187,8 +187,7 @@ void Map::generateWater(glm::vec4& posVec, double val)
                     m_tileSheet.texture.id,
                     0.0f,
                     color1);
-        }
-        else
+        } else
         {
             m_layerOneSpriteBatch.draw(
                     posVec,
@@ -215,8 +214,7 @@ void Map::generateMisc(glm::vec4 &posVec, int startingTile)
                     m_tileSheet2.texture.id,
                     0.0f,
                     m_colorTint);
-        }
-        else
+        } else
         {
             m_layerOneSpriteBatch.draw(
                     posVec,
@@ -236,7 +234,7 @@ double Map::noise(double nx, double ny)
 
 BIOME Map::biome(double val)
 {
-         if (val < 0.35) return BIOME::WATER;
+    if (val < 0.35) return BIOME::WATER;
     else if (val < 0.40) return BIOME::BEACH;
     else if (val < 0.55) return BIOME::FOREST;
     else if (val < 0.65) return BIOME::JUNGLE;
@@ -286,13 +284,11 @@ Map::calculateTileIndex(BIOME sTL, BIOME sT, BIOME sTR, BIOME sL, BIOME sR, BIOM
             if (chance(m_rng) > 0.7f)
             {
                 index += 1;
-            }
-            else
+            } else
             {
                 index += 2;
             }
-        }
-        else
+        } else
         {
             if (chance(m_rng) > 0.7f)
             {

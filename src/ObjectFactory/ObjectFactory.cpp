@@ -4,7 +4,6 @@
 #include "../Components/SensorComponent.h"
 #include "../Components/InteractiveComponent.h"
 #include "../Components/SpawnObjectComponent.h"
-#include <Falcon/Errors/Errors.h>
 
 std::shared_ptr<GameObject> ObjectFactory::createObject(const char *objectResource)
 {
@@ -25,15 +24,14 @@ std::shared_ptr<GameObject> ObjectFactory::createObject(const char *objectResour
         return std::shared_ptr<GameObject>();
     }
 
-    for (tinyxml2::XMLNode* pNode = pRoot->FirstChildElement(); pNode; pNode = pNode->NextSiblingElement())
+    for (tinyxml2::XMLNode *pNode = pRoot->FirstChildElement(); pNode; pNode = pNode->NextSiblingElement())
     {
         addComponent(obj, pNode);
     }
-
     return obj;
 }
 
-void ObjectFactory::addComponent(std::shared_ptr<GameObject> obj, tinyxml2::XMLNode* pNode)
+void ObjectFactory::addComponent(std::shared_ptr<GameObject> obj, tinyxml2::XMLNode *pNode)
 {
 
     std::string component = pNode->Value();
@@ -42,45 +40,37 @@ void ObjectFactory::addComponent(std::shared_ptr<GameObject> obj, tinyxml2::XMLN
         obj->attachComponent<BodyComponent>();
         obj->getComponent<BodyComponent>()->setWorld(m_world);
         obj->getComponent<BodyComponent>()->init(pNode);
-    }
-    else if (component == "CollisionComponent")
+    } else if (component == "CollisionComponent")
     {
         obj->attachComponent<CollisionComponent>();
         obj->getComponent<CollisionComponent>()->setObject(obj.get());
         obj->getComponent<CollisionComponent>()->init(pNode);
-    }
-    else if (component == "SpriteComponent")
+    } else if (component == "SpriteComponent")
     {
         obj->attachComponent<SpriteComponent>();
         obj->getComponent<SpriteComponent>()->init(pNode);
-    }
-    else if (component == "PlayerInputComponent")
+    } else if (component == "PlayerInputComponent")
     {
         obj->attachComponent<PlayerInputComponent>();
         obj->getComponent<PlayerInputComponent>()->init(pNode);
-    }
-    else if (component == "AnimationComponent")
+    } else if (component == "AnimationComponent")
     {
         obj->attachComponent<AnimationComponent>();
         obj->getComponent<AnimationComponent>()->init(pNode);
-    }
-    else if (component == "DirectionalAnimationComponent")
+    } else if (component == "DirectionalAnimationComponent")
     {
         obj->attachComponent<DirectionalAnimationComponent>();
         obj->getComponent<DirectionalAnimationComponent>()->init(pNode);
-    }
-    else if (component == "SensorComponent")
+    } else if (component == "SensorComponent")
     {
         obj->attachComponent<SensorComponent>();
         obj->getComponent<SensorComponent>()->setObject(obj.get());
         obj->getComponent<SensorComponent>()->init(pNode);
-    }
-    else if (component == "InteractiveComponent")
+    } else if (component == "InteractiveComponent")
     {
         obj->attachComponent<InteractiveComponent>();
         obj->getComponent<InteractiveComponent>()->init(pNode);
-    }
-    else if (component == "SpawnObjectComponent")
+    } else if (component == "SpawnObjectComponent")
     {
         obj->attachComponent<SpawnObjectComponent>();
         obj->getComponent<SpawnObjectComponent>()->init(pNode);
