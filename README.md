@@ -4,17 +4,11 @@
 ## Build executable for Linux
 ### Clone repo from GitHub
 ```
-$ git clone https://github.com/walker2/SunflowerSpaniel
+git clone https://github.com/walker2/SunflowerSpaniel
 ```
 ### Download and install dependencies
 ```
-$ sudo apt-get install libsdl2-dev
-$ sudo apt-get install libsdl2-ttf-dev
-$ sudo apt-get install libsdl2-mixer-dev
-$ sudo apt-get install libglew-dev
-$ sudo apt-get install libglm-dev
-$ sudo apt-get install libbox2d-dev
-$ sudo apt-get install libnoise-dev
+sudo apt-get install libsdl2-dev libsdl2-ttf-dev libsdl2-mixer-dev libglew-dev libglm-dev libbox2d-dev libnoise-dev
 ```
 ### Navigate to the cloned folder and run
 ```
