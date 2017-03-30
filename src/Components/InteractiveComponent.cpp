@@ -1,4 +1,5 @@
 #include "InteractiveComponent.h"
+#include "../ObjectFactory/ObjectFactory.h"
 
 void InteractiveComponent::init(tinyxml2::XMLNode *pNode)
 {

@@ -19,7 +19,6 @@ private:
 private:
     glm::vec2 m_position;
     int m_number = 3;
-    std::vector<std::shared_ptr<GameObject>>* m_gameObjects;
 };
 
 

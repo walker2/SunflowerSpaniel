@@ -11,7 +11,7 @@ void SpawnObjectComponent::update(GameObject *obj, float /*deltaTime*/)
 
 void SpawnObjectComponent::init(tinyxml2::XMLNode */*pNode*/)
 {
-    m_gameObjects = ObjectFactory::instance().getGameObjects();
+    // TODO: PARSE
 }
 
 void SpawnObjectComponent::receive(Message message)
@@ -31,7 +31,8 @@ void SpawnObjectComponent::spawnObject()
     {
         auto circle = ObjectFactory::instance().createObject("media/Objects/WoodItem.xml");
         circle->getComponent<BodyComponent>()->setPosition(m_position + glm::vec2(x_dist(rng), y_dist(rng)));
-        m_gameObjects->push_back(circle);
+        circle->setLayer(1);
+        ObjectFactory::instance().addObject(circle);
     }
 }
 

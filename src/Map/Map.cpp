@@ -3,10 +3,8 @@
 #include "../ObjectFactory/ObjectFactory.h"
 #include "Map.h"
 
-void Map::init(b2World */*world*/, int mapWidth, int mapHeight, const std::string tileSheetPath, int tileSize,
-               std::vector<std::shared_ptr<GameObject>> *gameObjects)
+void Map::init(b2World */*world*/, int mapWidth, int mapHeight, const std::string tileSheetPath, int tileSize)
 {
-    m_gameObjects = gameObjects;
     m_height = mapHeight;
     m_width = mapWidth;
     m_tileSize = tileSize / 10;
@@ -118,7 +116,8 @@ void Map::generateMap()
                             // Generate the oak
                             std::shared_ptr<GameObject> oak = ObjectFactory::instance().createObject("media/Objects/Oak.xml");
                             oak->getComponent<BodyComponent>()->setPosition(glm::vec2(posVec.x, posVec.y));
-                            m_gameObjects->push_back(oak);
+                            oak->setLayer(2);
+                            ObjectFactory::instance().addObject(oak);
                         }
 
                     }
@@ -132,7 +131,8 @@ void Map::generateMap()
                             // Generate evergreen
                             std::shared_ptr<GameObject> evergreen = ObjectFactory::instance().createObject("media/Objects/Evergreen.xml");
                             evergreen->getComponent<BodyComponent>()->setPosition(glm::vec2(posVec.x, posVec.y));
-                            m_gameObjects->push_back(evergreen);
+                            evergreen->setLayer(2);
+                            ObjectFactory::instance().addObject(evergreen);
                         }
                     }
                     break;

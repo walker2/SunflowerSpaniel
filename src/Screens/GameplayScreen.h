@@ -115,7 +115,6 @@ private:
     Falcon::BasicLight playerLight;
     Falcon::BasicLight mouseLight;
 
-    std::vector<std::shared_ptr<GameObject>> *m_gameObjects;    ///< Vector of all gameObjects on scene
     std::shared_ptr<GameObject> m_player;   ///< Player gameObject handle
     Map m_map;                              ///< Map object that draws all background sprites
     std::unique_ptr<b2World> m_world;       ///< World for physics simulation

@@ -60,6 +60,7 @@ public:
 
         return newComponent;
     }
+
     /**
      * Method for getting component by type
      * @tparam T Component type
@@ -78,6 +79,7 @@ public:
         }
         return nullptr;
     }
+
     /**
      * Sends some message to all component within this gameObject
      * @param message message
@@ -87,16 +89,23 @@ public:
     DIRECTION getDirection() const
     { return m_direction; }
 
-    bool isDestroyed()
-    { return m_isDestroyed; }
+    int getLayer()
+    { return m_layer; }
 
     void setDirection(DIRECTION dir)
     { m_direction = dir; }
+
+    void setLayer(int num)
+    { m_layer = num; }
+
+    bool isDestroyed()
+    { return m_isDestroyed; }
 
 protected:
     std::vector<std::shared_ptr<Component>> m_components;   ///< A vector of all pointer to components that attached to this GameObject
     DIRECTION m_direction = DIRECTION::NONE;    ///< Direction gameObject is facing
     bool m_isDestroyed = false;
+    int m_layer = 0;
 
 };
 

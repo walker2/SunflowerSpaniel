@@ -7,7 +7,6 @@
 #include "Falcon/2D/SpriteFont/SpriteFont.h"
 #include "Component.h"
 #include "../ObjectFactory/GameObject.h"
-#include "../ObjectFactory/ObjectFactory.h"
 
 class InteractiveComponent : public Component
 {

@@ -1,8 +1,7 @@
 #include "GameplayScreen.h"
 #include "Falcon/GameIntefaces/IMainGame.h"
-#include "../Components/AnimationComponent.h"
 #include "ScreenIndices.h"
-#include "../Components/SensorComponent.h"
+
 #include "../Messaging/ContactListener.h"
 
 ContactListener listener;
@@ -60,32 +59,27 @@ void GameplayScreen::onEntry()
     b2Vec2 gravity(0.0f, 0.0f);
     m_world = std::make_unique<b2World>(gravity);
     ObjectFactory::instance().setWorld(m_world.get());
-    m_gameObjects = ObjectFactory::instance().getGameObjects();
     m_world->SetContactListener(&listener);
 
     m_player = ObjectFactory::instance().createObject("media/Objects/Player.xml");
-    m_gameObjects->push_back(m_player);
+    m_player->setLayer(1);
+    ObjectFactory::instance().addObject(m_player);
 
-    m_map.init(m_world.get(), 200, 200, "media/Textures/terrain.png", 32, m_gameObjects);
+    m_map.init(m_world.get(), 200, 200, "media/Textures/terrain.png", 32);
     m_map.generateMap();
 }
 
 void GameplayScreen::onExit()
 {
-    m_gameObjects->clear();
+    //m_gameObjects->clear();
     m_map.dispose();
 }
 
 void GameplayScreen::update(float deltaTime)
 {
     checkInput();
-    for (auto &object : *m_gameObjects)
-    {
-        if (!object->isDestroyed())
-        {
-            object->update(deltaTime);
-        }
-    }
+
+    ObjectFactory::instance().updateGameObjects(deltaTime);
     // TODO: MAYBE A CAMERA FOLLOW COMPONENT?
 
     auto playerPos = m_player->getComponent<BodyComponent>()->getPosition();
@@ -182,67 +176,9 @@ void GameplayScreen::draw(float deltaTime)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     m_textureProgram.use();
+
     m_spriteBatch.begin();
-    for (auto &object : *m_gameObjects)
-    {
-        auto spriteComponent = object->getComponent<SpriteComponent>();
-        auto animationComponent = object->getComponent<AnimationComponent>();
-        auto collisionComponent = object->getComponent<CollisionComponent>();
-        auto bodyComponent = object->getComponent<BodyComponent>();
-        auto sensorComponent = object->getComponent<SensorComponent>();
-        auto interactiveComponent = object->getComponent<InteractiveComponent>();
-
-        if (!collisionComponent)
-        {
-            if (spriteComponent)
-            {
-                spriteComponent->draw(m_spriteBatch);
-            }
-
-            if (animationComponent)
-            {
-                animationComponent->draw(m_spriteBatch, deltaTime);
-            }
-        } else if (m_camera.isBoxVisible(bodyComponent->getPosition(), collisionComponent->getDimensions()))
-        {
-            if (spriteComponent)
-            {
-                spriteComponent->draw(m_spriteBatch);
-            }
-
-            if (animationComponent)
-            {
-                animationComponent->draw(m_spriteBatch, deltaTime);
-            }
-
-            if (interactiveComponent)
-            {
-                interactiveComponent->draw(m_spriteBatch, deltaTime);
-            }
-
-
-            if (m_renderDebug)
-            {
-                if (collisionComponent)
-                {
-                    if (bodyComponent->getBody()->GetType() == b2_dynamicBody)
-                    {
-                        collisionComponent->drawDebug(m_debugRender, Falcon::Color(255, 0, 255, 255));
-                    } else
-                    {
-
-                        collisionComponent->drawDebug(m_debugRender, Falcon::Color(255, 255, 0, 255));
-                    }
-                }
-
-                if (sensorComponent)
-                {
-                    sensorComponent->drawDebug(m_debugRender, Falcon::Color(0, 255, 0, 255));
-                }
-            }
-        }
-
-    }
+    ObjectFactory::instance().drawGameObjects(m_spriteBatch, deltaTime, m_camera, m_debugRender, m_renderDebug);
     m_spriteBatch.end();
     m_spriteBatch.renderBatch();
 
@@ -290,7 +226,10 @@ void GameplayScreen::draw(float deltaTime)
                 m_player->getComponent<BodyComponent>()->getPosition().y);
     ImGui::Text("Time %.5f", m_time);
     ImGui::Text("Player light alpha %i", playerLight.color.a);
-    ImGui::Text("Number of objects in the scene %li", m_gameObjects->size());
+    ImGui::Text("Number of objects on 0 layer %li", ObjectFactory::instance().getNumberOfGameObjectsOnLayer(0));
+    ImGui::Text("Number of objects on 1 layer %li", ObjectFactory::instance().getNumberOfGameObjectsOnLayer(1));
+    ImGui::Text("Number of objects on 2 layer %li", ObjectFactory::instance().getNumberOfGameObjectsOnLayer(2));
+    ImGui::Text("Number of objects on 3 layer %li", ObjectFactory::instance().getNumberOfGameObjectsOnLayer(3));
     ImGui::Text("RAM usage by app %i kbytes", getRamUsage());
     ImGui::End();
     ImGui::Render();

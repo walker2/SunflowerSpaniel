@@ -24,8 +24,7 @@ public:
     ~Map()
     {}
 
-    void init(b2World *world, int mapWidth, int mapHeight, const std::string tileSheetPath, int tileSize,
-              std::vector<std::shared_ptr<GameObject>> *gameObjects);
+    void init(b2World *world, int mapWidth, int mapHeight, const std::string tileSheetPath, int tileSize);
 
     void generateMap();
 
@@ -65,7 +64,6 @@ private:
     Falcon::SpriteBatch m_layerOneSpriteBatch;
     Falcon::SpriteBatch m_layerTwoSpriteBatch;
 
-    std::vector<std::shared_ptr<GameObject>> *m_gameObjects;
     noise::module::Perlin m_gen;
     std::vector<std::vector<double>> m_value;
     std::mt19937 m_rng;

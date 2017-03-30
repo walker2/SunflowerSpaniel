@@ -1,9 +1,5 @@
 #include "ObjectFactory.h"
-#include "../Components/AnimationComponent.h"
-#include "../Components/DirectionalAnimationComponent.h"
-#include "../Components/SensorComponent.h"
-#include "../Components/InteractiveComponent.h"
-#include "../Components/SpawnObjectComponent.h"
+
 
 std::shared_ptr<GameObject> ObjectFactory::createObject(const char *objectResource)
 {
