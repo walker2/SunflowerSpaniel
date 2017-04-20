@@ -1,5 +1,7 @@
 #include "InteractiveComponent.h"
 #include "../ObjectFactory/ObjectFactory.h"
+#include "../Messaging/Messages.h"
+#include "../Messaging/MessageManager.h"
 
 void InteractiveComponent::init(tinyxml2::XMLNode *pNode)
 {
@@ -58,11 +60,12 @@ void InteractiveComponent::update(GameObject *obj, float)
         {
             if (m_interactionType == "Spawn")
             {
-                obj->send(Message::PLAYER_SPAWNS_NEW_OBJECT);
-            }
-            else if (m_interactionType == "Pickup")
+                MessageManager::instance().dispatchMsg(0, this->getObject()->getID(), this->getObject()->getID(),
+                                                       Message::PLAYER_SPAWNS_NEW_OBJECT, nullptr);
+            } else if (m_interactionType == "Pickup")
             {
-                obj->send(Message::PLAYER_PICK_UPS_OBJECT);
+                MessageManager::instance().dispatchMsg(0, this->getObject()->getID(), this->getObject()->getID(),
+                                                       Message::PLAYER_PICK_UPS_OBJECT, nullptr);
                 ObjectFactory::instance().deleteObject(obj);
             }
             m_visible = false;

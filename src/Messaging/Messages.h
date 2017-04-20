@@ -1,7 +1,7 @@
 #ifndef SUNFLOWERSPANIEL_MESSAGES_H
 #define SUNFLOWERSPANIEL_MESSAGES_H
 
-enum class Message
+enum Message
 {
     EMPTY = 0,
     PLAYER_MOVED,

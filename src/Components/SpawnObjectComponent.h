@@ -7,11 +7,13 @@
 class SpawnObjectComponent : public Component
 {
 public:
+    SpawnObjectComponent(GameObject* obj) : Component(obj)
+            {}
     void update(GameObject *obj, float deltaTime) override;
 
     void init(tinyxml2::XMLNode *pNode) override;
 
-    void receive(Message message) override;
+    void handleMessage(const Telegram &message) override;
 
 private:
     void spawnObject();

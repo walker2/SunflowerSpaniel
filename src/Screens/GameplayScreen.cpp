@@ -61,9 +61,16 @@ void GameplayScreen::onEntry()
     ObjectFactory::instance().setWorld(m_world.get());
     m_world->SetContactListener(&listener);
 
-    m_player = ObjectFactory::instance().createObject("media/Objects/Player.xml");
-    m_player->setLayer(1);
-    ObjectFactory::instance().addObject(m_player);
+    m_dogPlayer = ObjectFactory::instance().createObject("media/Objects/DogPlayer.xml");
+    m_humanPlayer = ObjectFactory::instance().createObject("media/Objects/HumanPlayer.xml");
+    m_dogPlayer->setLayer(1);
+    m_humanPlayer->setLayer(1);
+
+    ObjectFactory::instance().addObject(m_dogPlayer);
+    ObjectFactory::instance().addObject(m_humanPlayer);
+
+    m_currentPlayer = m_humanPlayer;
+
 
     m_map.init(m_world.get(), 200, 200, "media/Textures/terrain.png", 32);
     m_map.generateMap();
@@ -82,7 +89,7 @@ void GameplayScreen::update(float deltaTime)
     ObjectFactory::instance().updateGameObjects(deltaTime);
     // TODO: MAYBE A CAMERA FOLLOW COMPONENT?
 
-    auto playerPos = m_player->getComponent<BodyComponent>()->getPosition();
+    auto playerPos = m_currentPlayer->getComponent<BodyComponent>()->getPosition();
 
     glm::vec2 newCamPos = playerPos;
     if (playerPos.x <= 43 || playerPos.x >= 556)
@@ -98,7 +105,7 @@ void GameplayScreen::update(float deltaTime)
     m_camera.update();
 
     // TODO: MAKE A LIGHT COMPONENT
-    playerLight.position = m_player->getComponent<BodyComponent>()->getPosition();
+    playerLight.position = m_currentPlayer->getComponent<BodyComponent>()->getPosition();
     glm::vec2 mousePos = m_camera.screenToWorld(Falcon::InputManager::instance().getMouseCoords());
     mouseLight.position = mousePos;
 
@@ -123,6 +130,23 @@ void GameplayScreen::update(float deltaTime)
         m_currentState = Falcon::ScreenState::CHANGE_PREV;
     }
 
+    //TODO: FOR TESTING ONLY, SHOULD BE REPLACED IN INPUT COMPONENT CODE
+    if (Falcon::InputManager::instance().isKeyPressed(SDLK_TAB))
+    {
+        if (m_currentPlayer == m_humanPlayer)
+        {
+            m_humanPlayer->getComponent<PlayerInputComponent>()->enable(false);
+            m_dogPlayer->getComponent<PlayerInputComponent>()->enable(true);
+            m_currentPlayer = m_dogPlayer;
+        } else if (m_currentPlayer == m_dogPlayer)
+        {
+            m_humanPlayer->getComponent<PlayerInputComponent>()->enable(true);
+            m_dogPlayer->getComponent<PlayerInputComponent>()->enable(false);
+            m_currentPlayer = m_humanPlayer;
+        }
+
+
+    }
 
     ObjectFactory::instance().deleteGameObjects();
 }
@@ -222,8 +246,8 @@ void GameplayScreen::draw(float deltaTime)
     ImGui::Text("Mouse position (%.2f, %.2f)",
                 m_camera.screenToWorld(Falcon::InputManager::instance().getMouseCoords()).x,
                 m_camera.screenToWorld(Falcon::InputManager::instance().getMouseCoords()).y);
-    ImGui::Text("Player position (%.2f, %.2f)", m_player->getComponent<BodyComponent>()->getPosition().x,
-                m_player->getComponent<BodyComponent>()->getPosition().y);
+    ImGui::Text("Player position (%.2f, %.2f)", m_currentPlayer->getComponent<BodyComponent>()->getPosition().x,
+                m_currentPlayer->getComponent<BodyComponent>()->getPosition().y);
     ImGui::Text("Time %.5f", m_time);
     ImGui::Text("Player light alpha %i", playerLight.color.a);
     ImGui::Text("Number of objects on 0 layer %li", ObjectFactory::instance().getNumberOfGameObjectsOnLayer(0));

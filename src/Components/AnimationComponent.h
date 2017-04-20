@@ -8,6 +8,9 @@
 class AnimationComponent : public Component
 {
 public:
+    AnimationComponent(GameObject* obj) : Component(obj)
+    {}
+
     void init(tinyxml2::XMLNode *pNode) override;
 
     void update(GameObject *obj, float deltaTime) override;

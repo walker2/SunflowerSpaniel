@@ -12,11 +12,15 @@
 class PlayerInputComponent : public Component
 {
 public:
-    PlayerInputComponent() {}
+    PlayerInputComponent(GameObject* obj) : Component(obj)
+    {}
 
     void init(tinyxml2::XMLNode *pNode) override;
 
     void update(GameObject* obj, float deltaTime);
+
+    void enable(bool enable)
+    { m_isEnabled = enable; }
 
 private:
     float m_movementSpeed = 20.0f;
@@ -24,6 +28,7 @@ private:
     unsigned int m_rightKeyID = 0;
     unsigned int m_upKeyID = 0;
     unsigned int m_downKeyID = 0;
+    bool m_isEnabled = 0;
 
 };
 

@@ -7,6 +7,8 @@
 class DirectionalAnimationComponent : public AnimationComponent
 {
 public:
+    DirectionalAnimationComponent(GameObject* obj) : AnimationComponent(obj)
+            {}
     void draw(Falcon::SpriteBatch &spriteBatch, float deltaTime) override;
 
     void init(tinyxml2::XMLNode *pNode) override;

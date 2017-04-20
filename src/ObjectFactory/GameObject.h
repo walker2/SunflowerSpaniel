@@ -6,7 +6,7 @@
 #include <memory>
 #include "../Components/Component.h"
 #include "../Components/BodyComponent.h"
-#include "../Messaging/Messages.h"
+#include "../Messaging/Telegram.h"
 
 enum class DIRECTION
 {
@@ -22,7 +22,7 @@ public:
     /**
      * Default constructor: attaches default BodyComponent
      */
-    GameObject();
+    GameObject(int id);
 
     /**
      * Clears all components
@@ -41,10 +41,10 @@ public:
      * @return shared pointer to created or existing component
      */
     template<class T>
-    std::shared_ptr<T> attachComponent()
+    std::shared_ptr<T> attachComponent(GameObject *obj)
     {
         // Create new component
-        std::shared_ptr<T> newComponent = std::make_shared<T>();
+        std::shared_ptr<T> newComponent = std::make_shared<T>(obj);
 
         // Check if we don't have component of this type
         for (auto &component : m_components)
@@ -84,13 +84,16 @@ public:
      * Sends some message to all component within this gameObject
      * @param message message
      */
-    void send(Message message);
+    bool handleMessage(const Telegram &msg);
 
     DIRECTION getDirection() const
     { return m_direction; }
 
     int getLayer()
     { return m_layer; }
+
+    int getID()
+    { return m_ID; }
 
     void setDirection(DIRECTION dir)
     { m_direction = dir; }
@@ -106,6 +109,7 @@ protected:
     DIRECTION m_direction = DIRECTION::NONE;    ///< Direction gameObject is facing
     bool m_isDestroyed = false;
     int m_layer = 0;
+    int m_ID;
 
 };
 

@@ -1,7 +1,3 @@
-//
-// Created by andrewshipilo on 2/3/17.
-//
-
 #include <iostream>
 #include "PlayerInputComponent.h"
 
@@ -37,10 +33,19 @@ void PlayerInputComponent::init(tinyxml2::XMLNode *pNode)
     {
         m_downKeyID = static_cast<unsigned>(SDL_GetKeyFromName(pDownKey->GetText()));
     }
+
+    tinyxml2::XMLElement *pIsEnabledElement = pNode->FirstChildElement("IsEnabled");
+    if (pIsEnabledElement)
+    {
+        pIsEnabledElement->QueryBoolText(&m_isEnabled);
+    }
 }
 
 void PlayerInputComponent::update(GameObject *obj, float deltaTime)
 {
+    if (!m_isEnabled)
+        return;
+
     b2Body *body = obj->getComponent<BodyComponent>()->getBody();
     b2Vec2 movementSpeed(0.0f, 0.0f);
 

@@ -1,5 +1,6 @@
 #include "SpawnObjectComponent.h"
 #include "../ObjectFactory/ObjectFactory.h"
+#include "../Messaging/Messages.h"
 #include <random>
 
 void SpawnObjectComponent::update(GameObject *obj, float /*deltaTime*/)
@@ -14,9 +15,9 @@ void SpawnObjectComponent::init(tinyxml2::XMLNode */*pNode*/)
     // TODO: PARSE
 }
 
-void SpawnObjectComponent::receive(Message message)
+void SpawnObjectComponent::handleMessage(const Telegram &message)
 {
-    if (message == Message::PLAYER_SPAWNS_NEW_OBJECT)
+    if (message.msg == Message::PLAYER_SPAWNS_NEW_OBJECT)
     {
         spawnObject();
     }

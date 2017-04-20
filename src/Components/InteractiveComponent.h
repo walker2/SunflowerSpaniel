@@ -11,6 +11,8 @@
 class InteractiveComponent : public Component
 {
 public:
+    InteractiveComponent(GameObject* obj) : Component(obj)
+            {}
     void init(tinyxml2::XMLNode *pNode) override;
 
     void update(GameObject *obj, float /*deltaTime*/) override;
@@ -31,7 +33,7 @@ private:
     glm::vec2 m_position;
     Falcon::Color m_color;
     float m_textScale;
-    bool m_visible;
+    bool m_visible = false;
 };
 
 

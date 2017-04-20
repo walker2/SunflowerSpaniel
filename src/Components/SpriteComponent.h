@@ -11,7 +11,7 @@
 class SpriteComponent : public Component
 {
 public:
-    SpriteComponent()
+    SpriteComponent(GameObject* obj) : Component(obj)
     {}
 
     void init(tinyxml2::XMLNode *pNode) override;

@@ -1,8 +1,9 @@
 #include "GameObject.h"
 
-GameObject::GameObject()
+GameObject::GameObject(int id)
 {
-    attachComponent<BodyComponent>();
+    attachComponent<BodyComponent>(this);
+    m_ID = id;
 }
 
 void GameObject::destroy()
@@ -25,10 +26,11 @@ void GameObject::update(float deltaTime)
     }
 }
 
-void GameObject::send(Message message)
+bool GameObject::handleMessage(const Telegram &msg)
 {
     for (auto &component : m_components)
     {
-        component->receive(message);
+        component->handleMessage(msg);
     }
+    return true;
 }

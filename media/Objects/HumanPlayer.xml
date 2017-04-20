@@ -1,13 +1,13 @@
 <Object>
     <BodyComponent>
-        <Position x="500" y="500"/>
+        <Position x="505" y="505"/>
         <BodyType>Dynamic</BodyType>
         <FixedRotation>true</FixedRotation>
         <LinearDamping>2</LinearDamping>
     </BodyComponent>
 
     <CollisionComponent>
-        <Dimensions height="2" width="2"/>
+        <Dimensions height="4" width="4"/>
         <Shape name="Circle">
             <Density>1.0f</Density>
             <Friction>0.3f</Friction>
@@ -28,25 +28,21 @@
         <RightKeyID>d</RightKeyID>
         <UpKeyID>w</UpKeyID>
         <DownKeyID>s</DownKeyID>
+        <IsEnabled>true</IsEnabled>
     </PlayerInputComponent>
 
-    <!-- <DirectionalAnimationComponent>
-        <Texture tileSize="32">media/Textures/Wolfpack.png</Texture>
-        <Color r="255" g="255" b="255" a="255"/>
-        <Dimensions height="4" width="4"/>
-        <Position x="0" y="1"/>
-        <SpriteID left="56" right="48" up="32" down="40">56</SpriteID>
-        <AnimationSpeed>0.1</AnimationSpeed>
-        <FrameCount>4</FrameCount>
-    </DirectionalAnimationComponent>
-    -->
     <DirectionalAnimationComponent>
-        <Texture tileSize="64">media/Textures/DogWalkingAnimation.png</Texture>
+        <Texture tileSize="64">media/Textures/HumanWalkingAnimation.png</Texture>
         <Color r="255" g="255" b="255" a="255"/>
-        <Dimensions height="6" width="6"/>
+        <Dimensions height="6" width="5"/>
         <Position x="0" y="1"/>
-        <SpriteID left="108" right="120" up="96" down="132" leftUp="48" leftDown="72" rightUp="60" rightDown="84">132</SpriteID>
+        <SpriteID left="18" right="0" up="27" down="9" leftUp="27" leftDown="9" rightUp="27" rightDown="9">0</SpriteID>
         <AnimationSpeed>0.2</AnimationSpeed>
-        <FrameCount>12</FrameCount>
+        <FrameCount>9</FrameCount>
     </DirectionalAnimationComponent>
+
+    <AIComponent>
+
+    </AIComponent>
+
 </Object>

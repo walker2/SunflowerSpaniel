@@ -9,7 +9,7 @@
 class CollisionComponent : public Component
 {
 public:
-    CollisionComponent()
+    CollisionComponent(GameObject* obj) : Component(obj)
     {}
 
     virtual void init(tinyxml2::XMLNode *pNode) override;

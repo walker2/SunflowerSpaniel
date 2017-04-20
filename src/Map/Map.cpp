@@ -100,7 +100,6 @@ void Map::generateMap()
 
             switch (biome(tile))
             {
-
                 case BIOME::WATER:
                     // EMPTY
                     break;
@@ -114,12 +113,12 @@ void Map::generateMap()
                         if (chance(m_rng) > 0.5f)
                         {
                             // Generate the oak
-                            std::shared_ptr<GameObject> oak = ObjectFactory::instance().createObject("media/Objects/Oak.xml");
+                            std::shared_ptr<GameObject> oak = ObjectFactory::instance().createObject(
+                                    "media/Objects/Oak.xml");
                             oak->getComponent<BodyComponent>()->setPosition(glm::vec2(posVec.x, posVec.y));
                             oak->setLayer(2);
                             ObjectFactory::instance().addObject(oak);
                         }
-
                     }
                     break;
                 case BIOME::JUNGLE:
@@ -129,7 +128,8 @@ void Map::generateMap()
                         if (chance(m_rng) > 0.5f)
                         {
                             // Generate evergreen
-                            std::shared_ptr<GameObject> evergreen = ObjectFactory::instance().createObject("media/Objects/Evergreen.xml");
+                            std::shared_ptr<GameObject> evergreen = ObjectFactory::instance().createObject(
+                                    "media/Objects/Evergreen.xml");
                             evergreen->getComponent<BodyComponent>()->setPosition(glm::vec2(posVec.x, posVec.y));
                             evergreen->setLayer(2);
                             ObjectFactory::instance().addObject(evergreen);

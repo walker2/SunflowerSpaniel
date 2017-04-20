@@ -46,127 +46,29 @@ public:
     { m_world = world; }
 
     void drawGameObjects(Falcon::SpriteBatch &spriteBatch, float deltaTime,
-                         Falcon::Camera2D &camera, Falcon::DebugRenderer &debugRender, bool renderDebug)
-    {
-        for (unsigned long i = 0; i < m_layerGameObjects.size(); i++)
-        {
-            spriteBatch.begin();
-            for (auto object : m_layerGameObjects[i])
-            {
-                auto spriteComponent = object->getComponent<SpriteComponent>();
-                auto animationComponent = object->getComponent<AnimationComponent>();
-                auto collisionComponent = object->getComponent<CollisionComponent>();
-                auto bodyComponent = object->getComponent<BodyComponent>();
-                auto sensorComponent = object->getComponent<SensorComponent>();
-                auto interactiveComponent = object->getComponent<InteractiveComponent>();
+                         Falcon::Camera2D &camera, Falcon::DebugRenderer &debugRender, bool renderDebug);
+    void updateGameObjects(float deltaTime);
 
-                if (!collisionComponent)
-                {
-                    if (spriteComponent)
-                    {
-                        spriteComponent->draw(spriteBatch);
-                    }
+    void addObject(std::shared_ptr<GameObject> object);
 
-                    if (animationComponent)
-                    {
-                        animationComponent->draw(spriteBatch, deltaTime);
-                    }
-                } else if (camera.isBoxVisible(bodyComponent->getPosition(), collisionComponent->getDimensions()))
-                {
-                    if (spriteComponent)
-                    {
-                        spriteComponent->draw(spriteBatch);
-                    }
+    void deleteObject(GameObject* obj);
 
-                    if (animationComponent)
-                    {
-                        animationComponent->draw(spriteBatch, deltaTime);
-                    }
-
-                    if (interactiveComponent)
-                    {
-                        interactiveComponent->draw(spriteBatch, deltaTime);
-                    }
-
-                    if (renderDebug)
-                    {
-                        if (collisionComponent)
-                        {
-                            if (bodyComponent->getBody()->GetType() == b2_dynamicBody)
-                            {
-                                collisionComponent->drawDebug(debugRender, Falcon::Color(255, 0, 255, 255));
-                            } else
-                            {
-
-                                collisionComponent->drawDebug(debugRender, Falcon::Color(255, 255, 0, 255));
-                            }
-                        }
-
-                        if (sensorComponent)
-                        {
-                            sensorComponent->drawDebug(debugRender, Falcon::Color(0, 255, 0, 255));
-                        }
-                    }
-                }
-            }
-            spriteBatch.end();
-            spriteBatch.renderBatch();
-        }
-    }
-
-    void updateGameObjects(float deltaTime)
-    {
-        for (unsigned long i = 0; i < m_layerGameObjects.size(); i++)
-        {
-            for (auto object : m_layerGameObjects[i])
-            {
-                if (!object->isDestroyed())
-                {
-                    object->update(deltaTime);
-                }
-            }
-        }
-    }
-
-    void addObject(std::shared_ptr<GameObject> object)
-    {
-        switch (object->getLayer())
-        {
-            case 0:
-                m_layerGameObjects[0].push_back(object);
-                break;
-            case 1:
-                m_layerGameObjects[1].push_back(object);
-                break;
-            case 2:
-                m_layerGameObjects[2].push_back(object);
-                break;
-            case 3:
-                m_layerGameObjects[3].push_back(object);
-                break;
-            default:break;
-        }
-    }
-
-    void deleteObject(GameObject* obj)
-    {
-        m_deletedGameObjects.push_back(obj);
-    }
-
-    void deleteGameObjects()
-    {
-        for (auto obj : m_deletedGameObjects)
-        {
-            obj->destroy();
-        }
-        m_deletedGameObjects.clear();
-    }
+    void deleteGameObjects();
 
     long int getNumberOfGameObjectsOnLayer(int layer)
     { return m_layerGameObjects[layer].size(); }
 
+    std::shared_ptr<GameObject> getObjectFromID(int id)
+    {
+        std::map<int, std::shared_ptr<GameObject>>::const_iterator ent = m_gameObjectsMap.find(id);
+
+        assert ( (ent !=  m_gameObjectsMap.end()) && "<EntityManager::GetEntityFromID>: invalid ID");
+
+        return ent->second;
+    }
+
 private:
-    unsigned long getNextActorId()
+    unsigned long getNextObjectId()
     {
         ++m_lastObjectID;
         return m_lastObjectID;
@@ -178,9 +80,10 @@ private:
 private:
     ObjectFactory()
     {
-        m_layerGameObjects.resize(4);
+        m_layerGameObjects.resize(100);
     }
-    std::vector<std::vector<std::shared_ptr<GameObject>>> m_layerGameObjects;
+    std::vector<std::vector<std::shared_ptr<GameObject>>> m_layerGameObjects;   ///< Matrix for layered rendering
+    std::map<int, std::shared_ptr<GameObject>> m_gameObjectsMap; ///< Map for fast lookup speeds for messaging
     std::vector<GameObject*> m_deletedGameObjects;  ///< Vector of gameObjects that should be deleted on the next frame
 };
 
