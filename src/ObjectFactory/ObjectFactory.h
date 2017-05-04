@@ -67,6 +67,25 @@ public:
         return ent->second;
     }
 
+
+    void setDogPlayerID(int id)
+    { m_dogPlayerID = id; }
+
+    void setHumanPlayerID(int id)
+    { m_humanPlayerID = id; }
+
+    void setCurrentPlayerID(int id)
+    { m_currentPlayerID = id; }
+
+    int getDogPlayerID()
+    { return m_dogPlayerID; }
+
+    int getHumanPlayerID()
+    { return m_humanPlayerID; }
+
+    int getCurrentPlayerID()
+    { return m_currentPlayerID; }
+
 private:
     unsigned long getNextObjectId()
     {
@@ -76,6 +95,9 @@ private:
 
     unsigned long m_lastObjectID;
     b2World *m_world;
+    int m_dogPlayerID;
+    int m_humanPlayerID;
+    int m_currentPlayerID;
 
 private:
     ObjectFactory()

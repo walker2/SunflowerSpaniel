@@ -53,8 +53,8 @@ public:
 private:
     SniffOutThePrey()
     {}
-    SniffOutThePrey(const LayDownAndRest&);
-    SniffOutThePrey& operator=(const LayDownAndRest&);
+    SniffOutThePrey(const SniffOutThePrey&);
+    SniffOutThePrey& operator=(const SniffOutThePrey&);
 };
 
 #endif

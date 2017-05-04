@@ -3,6 +3,7 @@
 #include "ScreenIndices.h"
 
 #include "../Messaging/ContactListener.h"
+#include "../Components/DogAIComponent.h"
 
 ContactListener listener;
 
@@ -68,8 +69,11 @@ void GameplayScreen::onEntry()
 
     ObjectFactory::instance().addObject(m_dogPlayer);
     ObjectFactory::instance().addObject(m_humanPlayer);
+    ObjectFactory::instance().setDogPlayerID(m_dogPlayer->getID());
+    ObjectFactory::instance().setHumanPlayerID(m_humanPlayer->getID());
 
     m_currentPlayer = m_humanPlayer;
+    ObjectFactory::instance().setCurrentPlayerID(m_currentPlayer->getID());
 
 
     m_map.init(m_world.get(), 200, 200, "media/Textures/terrain.png", 32);
@@ -137,15 +141,25 @@ void GameplayScreen::update(float deltaTime)
         {
             m_humanPlayer->getComponent<PlayerInputComponent>()->enable(false);
             m_dogPlayer->getComponent<PlayerInputComponent>()->enable(true);
+            m_humanPlayer->getComponent<SensorComponent>()->enable(false);
+            m_dogPlayer->getComponent<SensorComponent>()->enable(true);
             m_currentPlayer = m_dogPlayer;
-        } else if (m_currentPlayer == m_dogPlayer)
+        }
+        else if (m_currentPlayer == m_dogPlayer)
         {
             m_humanPlayer->getComponent<PlayerInputComponent>()->enable(true);
             m_dogPlayer->getComponent<PlayerInputComponent>()->enable(false);
+            m_humanPlayer->getComponent<SensorComponent>()->enable(true);
+            m_dogPlayer->getComponent<SensorComponent>()->enable(false);
             m_currentPlayer = m_humanPlayer;
         }
 
-
+        ObjectFactory::instance().setCurrentPlayerID(m_currentPlayer->getID());
+        m_showInventory = false;
+    }
+    if (Falcon::InputManager::instance().isKeyPressed(SDLK_i))
+    {
+        m_showInventory = !m_showInventory;
     }
 
     ObjectFactory::instance().deleteGameObjects();
@@ -215,78 +229,19 @@ void GameplayScreen::draw(float deltaTime)
     m_debugRender.end();
     m_debugRender.render(projectionMatrix, 2.0f);
 
+    m_debugGUI.begin();
+    m_debugGUI.draw(m_renderDebug, mouseLight,playerLight, m_camera, m_currentPlayer, m_time);
+    m_debugGUI.end();
 
-    bool open = true;
-    ImGui::SetNextWindowPos(ImVec2(10, 10));
-    if (!ImGui::Begin("Fixed Overlay", &open, ImVec2(0, 0), 0.3f,
-                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
-                      ImGuiWindowFlags_NoSavedSettings))
+    if (m_showInventory)
     {
-        ImGui::End();
-        return;
+        m_inventoryGUI.begin();
+        m_inventoryGUI.draw(m_currentPlayer);
+        m_debugGUI.end();
     }
 
-
-    if (ImGui::Button("Debug mode"))
-    {
-        m_renderDebug = !m_renderDebug;
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Random mouse color"))
-    {
-        std::mt19937 rng(time(0));
-        std::uniform_int_distribution<int> color(0, 255);
-        mouseLight.color.r = static_cast<GLubyte>(color(rng));
-        mouseLight.color.g = static_cast<GLubyte>(color(rng));
-        mouseLight.color.b = static_cast<GLubyte>(color(rng));
-    }
-    ImGui::Separator();
-    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,
-                ImGui::GetIO().Framerate);
-    ImGui::Text("Mouse position (%.2f, %.2f)",
-                m_camera.screenToWorld(Falcon::InputManager::instance().getMouseCoords()).x,
-                m_camera.screenToWorld(Falcon::InputManager::instance().getMouseCoords()).y);
-    ImGui::Text("Player position (%.2f, %.2f)", m_currentPlayer->getComponent<BodyComponent>()->getPosition().x,
-                m_currentPlayer->getComponent<BodyComponent>()->getPosition().y);
-    ImGui::Text("Time %.5f", m_time);
-    ImGui::Text("Player light alpha %i", playerLight.color.a);
-    ImGui::Text("Number of objects on 0 layer %li", ObjectFactory::instance().getNumberOfGameObjectsOnLayer(0));
-    ImGui::Text("Number of objects on 1 layer %li", ObjectFactory::instance().getNumberOfGameObjectsOnLayer(1));
-    ImGui::Text("Number of objects on 2 layer %li", ObjectFactory::instance().getNumberOfGameObjectsOnLayer(2));
-    ImGui::Text("Number of objects on 3 layer %li", ObjectFactory::instance().getNumberOfGameObjectsOnLayer(3));
-    ImGui::Text("RAM usage by app %i kbytes", getRamUsage());
-    ImGui::End();
+    ImGui::ShowTestWindow();
     ImGui::Render();
-
-}
-
-int parseLine(char *line)
-{
-    // This assumes that a digit will be found and the line ends in " Kb".
-    int i = (int) strlen(line);
-    const char *p = line;
-    while (*p < '0' || *p > '9') p++;
-    line[i - 3] = '\0';
-    i = atoi(p);
-    return i;
-}
-
-int GameplayScreen::getRamUsage()
-{ //Note: this value is in KB!
-    FILE *file = fopen("/proc/self/status", "r");
-    int result = -1;
-    char line[128];
-
-    while (fgets(line, 128, file) != NULL)
-    {
-        if (strncmp(line, "VmRSS:", 6) == 0)
-        {
-            result = parseLine(line);
-            break;
-        }
-    }
-    fclose(file);
-    return result;
 }
 
 void GameplayScreen::checkInput()

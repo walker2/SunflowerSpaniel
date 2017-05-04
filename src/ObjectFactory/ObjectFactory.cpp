@@ -1,5 +1,7 @@
 #include "ObjectFactory.h"
 #include "../Components/DogAIComponent.h"
+#include "../Components/InventoryComponent.h"
+#include "../Components/HumanAIComponent.h"
 
 
 std::shared_ptr<GameObject> ObjectFactory::createObject(const char *objectResource)
@@ -33,6 +35,15 @@ void ObjectFactory::addComponent(std::shared_ptr<GameObject> obj, tinyxml2::XMLN
 {
 
     std::string component = pNode->Value();
+    if (component == "NameComponent")
+    {
+        tinyxml2::XMLElement *pNameElement = pNode->FirstChildElement("Name");
+
+        if (pNameElement)
+        {
+            obj->setName(pNameElement->GetText());
+        }
+    }
     if (component == "BodyComponent")
     {
         obj->attachComponent<BodyComponent>(obj.get());
@@ -76,6 +87,14 @@ void ObjectFactory::addComponent(std::shared_ptr<GameObject> obj, tinyxml2::XMLN
     {
         obj->attachComponent<DogAIComponent>(obj.get());
         obj->getComponent<DogAIComponent>()->init(pNode);
+    } else if (component == "HumanAIComponent")
+    {
+        obj->attachComponent<HumanAIComponent>(obj.get());
+        obj->getComponent<HumanAIComponent>()->init(pNode);
+    } else if (component == "InventoryComponent")
+    {
+        obj->attachComponent<InventoryComponent>(obj.get());
+        obj->getComponent<InventoryComponent>()->init(pNode);
     }
 
 
@@ -96,6 +115,8 @@ void ObjectFactory::drawGameObjects(Falcon::SpriteBatch &spriteBatch, float delt
             auto sensorComponent = object->getComponent<SensorComponent>();
             auto interactiveComponent = object->getComponent<InteractiveComponent>();
             auto dogAIComponent = object->getComponent<DogAIComponent>();
+            auto humanAIComponent = object->getComponent<HumanAIComponent>();
+            auto inventoryComponent = object->getComponent<InventoryComponent>();
 
             if (!collisionComponent)
             {
@@ -128,6 +149,16 @@ void ObjectFactory::drawGameObjects(Falcon::SpriteBatch &spriteBatch, float delt
                 if (dogAIComponent)
                 {
                     dogAIComponent->draw(spriteBatch, deltaTime);
+                }
+
+                if (humanAIComponent)
+                {
+                    humanAIComponent->draw(spriteBatch, deltaTime);
+                }
+
+                if (inventoryComponent)
+                {
+                    inventoryComponent->draw(spriteBatch, deltaTime);
                 }
 
                 if (renderDebug)

@@ -2,6 +2,7 @@
 #include "../ObjectFactory/ObjectFactory.h"
 #include "../Messaging/Messages.h"
 #include "../Messaging/MessageManager.h"
+#include "InventoryComponent.h"
 
 void InteractiveComponent::init(tinyxml2::XMLNode *pNode)
 {
@@ -64,7 +65,7 @@ void InteractiveComponent::update(GameObject *obj, float)
                                                        Message::PLAYER_SPAWNS_NEW_OBJECT, nullptr);
             } else if (m_interactionType == "Pickup")
             {
-                MessageManager::instance().dispatchMsg(0, this->getObject()->getID(), this->getObject()->getID(),
+                MessageManager::instance().dispatchMsg(0, this->getObject()->getID(), ObjectFactory::instance().getCurrentPlayerID(), //should be current i suppose
                                                        Message::PLAYER_PICK_UPS_OBJECT, nullptr);
                 ObjectFactory::instance().deleteObject(obj);
             }
@@ -75,6 +76,8 @@ void InteractiveComponent::update(GameObject *obj, float)
 
 void InteractiveComponent::draw(Falcon::SpriteBatch &spriteBatch, float)
 {
+
+
     if (m_visible)
     {
         m_spriteFont->draw(spriteBatch, m_text.c_str(), m_position, glm::vec2(m_textScale), 0.0f, m_color);

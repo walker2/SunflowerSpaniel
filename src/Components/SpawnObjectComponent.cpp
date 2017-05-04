@@ -30,7 +30,7 @@ void SpawnObjectComponent::spawnObject()
     std::uniform_real_distribution<float> y_dist(2.5, 5.0f);
     for (int i = 0; i < 5; i++)
     {
-        auto circle = ObjectFactory::instance().createObject("media/Objects/WoodItem.xml");
+        auto circle = ObjectFactory::instance().createObject("media/Objects/AppleFruit.xml");
         circle->getComponent<BodyComponent>()->setPosition(m_position + glm::vec2(x_dist(rng), y_dist(rng)));
         circle->setLayer(1);
         ObjectFactory::instance().addObject(circle);

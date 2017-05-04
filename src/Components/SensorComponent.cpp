@@ -42,5 +42,8 @@ void SensorComponent::init(tinyxml2::XMLNode *pNode)
 
 void SensorComponent::update(GameObject *obj, float /*deltaTime*/)
 {
+    if (!m_isEnabled)
+        return;
+
     m_body = obj->getComponent<BodyComponent>()->getBody();
 }

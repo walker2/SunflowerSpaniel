@@ -95,11 +95,18 @@ public:
     int getID()
     { return m_ID; }
 
+    std::string getName()
+    { return m_name; }
+
+
     void setDirection(DIRECTION dir)
     { m_direction = dir; }
 
     void setLayer(int num)
     { m_layer = num; }
+
+    void setName(const std::string &name)
+    { m_name = name; }
 
     bool isDestroyed()
     { return m_isDestroyed; }
@@ -110,6 +117,7 @@ protected:
     bool m_isDestroyed = false;
     int m_layer = 0;
     int m_ID;
+    std::string m_name;
 
 };
 

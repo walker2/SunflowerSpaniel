@@ -20,6 +20,8 @@
 #include "ImGUI/imgui.h"
 #include "ImGUI/imgui_impl_sdl.h"
 #include "../ObjectFactory/ObjectFactory.h"
+#include "../GUI/DebugGUI.h"
+#include "../GUI/InventoryGUI.h"
 
 /**
  * GameScreen that implements GameplayScreen in Application
@@ -94,16 +96,11 @@ private:
     */
     void compileShader(Falcon::ShaderProgram &shaderProgram, const std::string &vertPath, const std::string &fragPath);
 
-    /**
-     * Helper function that returns RAM used by Application
-     * @return RAM used by Application
-     */
-    int getRamUsage();
-
     bool m_renderDebug = false;
     float mouse_color[3];
     float m_time = 0.0f;
     int m_darker = 1;
+    bool m_showInventory = false;
 
     Falcon::ShaderProgram m_textureProgram; ///< Shader program for texture shader compiling
     Falcon::ShaderProgram m_lightProgram;   ///< Shader program for light shader compiling
@@ -118,8 +115,11 @@ private:
     std::shared_ptr<GameObject> m_currentPlayer;   ///< Player gameObject handle
     std::shared_ptr<GameObject> m_dogPlayer;
     std::shared_ptr<GameObject> m_humanPlayer;
-    Map m_map;                              ///< Map object that draws all background sprites
     std::unique_ptr<b2World> m_world;       ///< World for physics simulation
+
+    Map m_map;                              ///< Map object that draws all background sprites
+    DebugGUI m_debugGUI;
+    InventoryGUI m_inventoryGUI;
 };
 
 

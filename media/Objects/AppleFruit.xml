@@ -1,4 +1,7 @@
-<WoodItem>
+<AppleFruit>
+    <NameComponent>
+        <Name>AppleFruit</Name>
+    </NameComponent>
     <BodyComponent>
         <Position x="0" y="0"/>
         <BodyType>Dynamic</BodyType>
@@ -15,9 +18,9 @@
     </CollisionComponent>
 
     <SpriteComponent>
-        <Texture>media/Textures/wood.png</Texture>
+        <Texture>media/Textures/apple.png</Texture>
         <Color r="255" g="255" b="255" a="255"/>
-        <Dimensions height="1.5" width="1.5"/>
+        <Dimensions height="2" width="2"/>
         <Position x="0" y="0"/>
         <SpriteID>0</SpriteID>
     </SpriteComponent>
@@ -29,4 +32,4 @@
         <InteractionKey>f</InteractionKey>
         <InteractionType>Pickup</InteractionType>
     </InteractiveComponent>
-</WoodItem>
+</AppleFruit>

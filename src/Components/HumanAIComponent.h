@@ -1,23 +1,23 @@
-#ifndef SUNFLOWERSPANIEL_DOGAICOMPONENT_H
-#define SUNFLOWERSPANIEL_DOGAICOMPONENT_H
+#ifndef SUNFLOWERSPANIEL_HUMANAICOMPONENT_H
+#define SUNFLOWERSPANIEL_HUMANAICOMPONENT_H
 
 #include <Falcon/2D/SpriteFont/SpriteFont.h>
 #include "Component.h"
 #include "../FSM/StateManager.h"
-#include "../States/DogOwnedStates.h"
+#include "../States/HumanOwnedStates.h"
 #include "../ObjectFactory/GameObject.h"
 #include "../FSM/State.h"
 #include "NeedsComponent.h"
 
 struct Telegram;
-
-class DogAIComponent : public NeedsComponent
+class HumanAIComponent : public NeedsComponent
 {
+
 public:
-    DogAIComponent(GameObject *obj) : NeedsComponent(obj)
+    HumanAIComponent(GameObject *obj) : NeedsComponent(obj)
     {
-        m_manager = std::make_shared<StateManager<DogAIComponent>>(this);
-        m_manager->setCurrentState(LayDownAndRest::instance());
+        m_manager = std::make_shared<StateManager<HumanAIComponent>>(this);
+        m_manager->setCurrentState(Hunt::instance());
     }
 
     void update(GameObject *obj, float deltaTime) override
@@ -56,16 +56,16 @@ public:
     void printMessage(const std::string &text)
     { m_text = text; }
 
-    std::shared_ptr<StateManager<DogAIComponent>> getFSM()
+    std::shared_ptr<StateManager<HumanAIComponent>> getFSM()
     { return  m_manager; }
 
 
 private:
-    std::shared_ptr<StateManager<DogAIComponent>> m_manager;
+    std::shared_ptr<StateManager<HumanAIComponent>> m_manager;
     Falcon::SpriteFont *m_spriteFont;
     std::string m_text = "";
     glm::vec2 m_position;
 };
 
 
-#endif
+#endif //SUNFLOWERSPANIEL_HUMANAICOMPONENT_H

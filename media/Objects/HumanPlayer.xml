@@ -41,8 +41,11 @@
         <FrameCount>9</FrameCount>
     </DirectionalAnimationComponent>
 
-    <AIComponent>
+    <HumanAIComponent>
+        <Font size="12">media/Fonts/pixel_font.ttf</Font>
+    </HumanAIComponent>
 
-    </AIComponent>
+    <InventoryComponent>
 
+    </InventoryComponent>
 </Object>
