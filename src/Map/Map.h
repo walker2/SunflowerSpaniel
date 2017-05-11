@@ -7,18 +7,18 @@
 #include <noise.h>
 #include <Box2D/Box2D.h>
 #include <random>
-
 #include "../ObjectFactory/GameObject.h"
+#include "../Pathfinding/SearchAlghorithms.h"
 
 enum class BIOME
 {
-    WATER = -1, BEACH, FOREST, JUNGLE, SAVANNAH, ROCKS, SNOW
+    WATER = -1, BEACH, FOREST, JUNGLE, SAVANNAH, ROCKS, SNOW, ROAD
 };
 
 class Map
 {
 public:
-    Map()
+    Map() : m_grid(200, 200)
     {}
 
     ~Map()
@@ -51,6 +51,8 @@ private:
 
     void generateMisc(glm::vec4 &posVec, int startingTile);
 
+    void generateRoad(SquareGrid::Location start, SquareGrid::Location goal);
+
 
 private:
     bool m_isGenerated = false;
@@ -67,7 +69,8 @@ private:
     noise::module::Perlin m_gen;
     std::vector<std::vector<double>> m_value;
     std::mt19937 m_rng;
-
+    SquareGrid::Location m_prevGoal;
+    GridWithWeights m_grid;
 };
 
 

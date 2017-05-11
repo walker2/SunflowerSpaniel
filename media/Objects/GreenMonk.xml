@@ -1,6 +1,6 @@
 <Object>
     <BodyComponent>
-        <Position x="0" y="0"/>
+        <Position x="125" y="565"/>
         <BodyType>Static</BodyType>
         <FixedRotation>false</FixedRotation>
         <LinearDamping>2</LinearDamping>
@@ -15,19 +15,19 @@
     </CollisionComponent>
 
     <SpriteComponent>
-        <Texture>media/Textures/Oak.png</Texture>
+        <Texture>media/Textures/GreenMonkSprite.png</Texture>
         <Color r="255" g="255" b="255" a="255"/>
-        <Dimensions height="16" width="9.6"/>
-        <Position x="0" y="4"/>
+        <Dimensions height="6" width="5"/>
+        <Position x="0" y="0"/>
         <SpriteID>0</SpriteID>
     </SpriteComponent>
 
     <InteractiveComponent>
         <Font size="16">media/Fonts/alagard.ttf</Font>
-        <Text scale="0.1">E: Interact</Text>
+        <Text scale="0.1">E: Talk</Text>
         <Color r="255" g="255" b="255" a="255"/>
         <InteractionKey>e</InteractionKey>
-        <InteractionType>Spawn</InteractionType>
+        <InteractionType>Talk</InteractionType>
     </InteractiveComponent>
 
     <SpawnObjectComponent>

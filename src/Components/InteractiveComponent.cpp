@@ -1,3 +1,4 @@
+#include <ImGUI/imgui.h>
 #include "InteractiveComponent.h"
 #include "../ObjectFactory/ObjectFactory.h"
 #include "../Messaging/Messages.h"
@@ -57,7 +58,7 @@ void InteractiveComponent::update(GameObject *obj, float)
     m_position.y = body->GetPosition().y;
     if (m_visible)
     {
-        if (Falcon::InputManager::instance().isKeyPressed(m_interactionKeyID))
+        if (ImGui::IsKeyDown(m_interactionKeyID))
         {
             if (m_interactionType == "Spawn")
             {
@@ -65,9 +66,14 @@ void InteractiveComponent::update(GameObject *obj, float)
                                                        Message::PLAYER_SPAWNS_NEW_OBJECT, nullptr);
             } else if (m_interactionType == "Pickup")
             {
-                MessageManager::instance().dispatchMsg(0, this->getObject()->getID(), ObjectFactory::instance().getCurrentPlayerID(), //should be current i suppose
+                MessageManager::instance().dispatchMsg(0, this->getObject()->getID(),
+                                                       ObjectFactory::instance().getCurrentPlayerID(), //should be current i suppose
                                                        Message::PLAYER_PICK_UPS_OBJECT, nullptr);
                 ObjectFactory::instance().deleteObject(obj);
+            } else if (m_interactionType == "Talk")
+            {
+                MessageManager::instance().dispatchMsg(0,  this->getObject()->getID(), this->getObject()->getID(),
+                                                       Message::PLAYER_TALKED, nullptr);
             }
             m_visible = false;
         }

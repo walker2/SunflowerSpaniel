@@ -1,0 +1,25 @@
+<Object>
+    <BodyComponent>
+        <Position x="245" y="155"/>
+        <BodyType>Static</BodyType>
+        <FixedRotation>false</FixedRotation>
+        <LinearDamping>2</LinearDamping>
+    </BodyComponent>
+
+    <CollisionComponent>
+        <Dimensions height="10" width="28"/>
+        <Shape name="Box">
+            <Density>1.0f</Density>
+            <Friction>0.3f</Friction>
+        </Shape>
+    </CollisionComponent>
+
+    <SpriteComponent>
+        <Texture>media/Textures/Home2.png</Texture>
+        <Color r="255" g="255" b="255" a="255"/>
+        <Dimensions height="24" width="32"/>
+        <Position x="-3" y="7"/>
+        <SpriteID>0</SpriteID>
+    </SpriteComponent>
+
+</Object>

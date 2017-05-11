@@ -3,14 +3,21 @@
 #include "../ObjectFactory/ObjectFactory.h"
 #include "Map.h"
 
+GridWithWeights make_diagram_for_play_field() {
+    GridWithWeights grid(200, 200);
+    add_rect(grid, 1, 7, 4, 9);
+    return grid;
+}
+
 void Map::init(b2World */*world*/, int mapWidth, int mapHeight, const std::string tileSheetPath, int tileSize)
 {
+    // TODO: ADD AREAS OF NOT SPAWNING TREES
     m_height = mapHeight;
     m_width = mapWidth;
     m_tileSize = tileSize / 10;
     m_colorTint.setColor(255, 255, 255);
     Falcon::GLTexture texture = Falcon::ResourceManager::getTexture(tileSheetPath);
-    Falcon::GLTexture transTexture = Falcon::ResourceManager::getTexture("media/Textures/SandWaterTest.png");
+    Falcon::GLTexture transTexture = Falcon::ResourceManager::getTexture("media/Textures/TransitionsWithRoad.png");
 
     m_tileSheet.init(texture, glm::ivec2(texture.width / tileSize, texture.height / tileSize));
     m_tileSheet2.init(transTexture, glm::ivec2(transTexture.width / tileSize, transTexture.height / tileSize));
@@ -19,10 +26,15 @@ void Map::init(b2World */*world*/, int mapWidth, int mapHeight, const std::strin
     {
         val.resize(m_width);
     }
+    m_grid = make_diagram_for_play_field();
 }
 
 void Map::generateMap()
 {
+
+    m_rng.seed(time(0));
+    m_gen.SetSeed(time(0));
+
     for (double y = 0; y < m_height; y++)
     {
         for (double x = 0; x < m_width; x++)
@@ -39,8 +51,39 @@ void Map::generateMap()
             m_value[x][y] = e;
         }
     }
-    m_rng.seed(time(0));
-    m_gen.SetSeed(time(0));
+    std::shared_ptr<GameObject> redInn = ObjectFactory::instance().createObject("media/Objects/RedINN.xml");
+    redInn->setLayer(3);
+    ObjectFactory::instance().addObject(redInn);
+    SquareGrid::Location redInnPos {redInn->getComponent<BodyComponent>()->getPosition().x / 3,
+                                    redInn->getComponent<BodyComponent>()->getPosition().y / 3};
+
+    std::shared_ptr<GameObject> redMonk = ObjectFactory::instance().createObject("media/Objects/RedMonk.xml");
+    redMonk->setLayer(3);
+    ObjectFactory::instance().addObject(redMonk);
+
+    std::shared_ptr<GameObject> blueInn = ObjectFactory::instance().createObject("media/Objects/BlueINN.xml");
+    blueInn->setLayer(3);
+    ObjectFactory::instance().addObject(blueInn);
+    SquareGrid::Location blueInnPos {blueInn->getComponent<BodyComponent>()->getPosition().x / 3,
+                                     blueInn->getComponent<BodyComponent>()->getPosition().y / 3};
+
+    std::shared_ptr<GameObject> blueMonk = ObjectFactory::instance().createObject("media/Objects/BlueMonk.xml");
+    blueMonk->setLayer(3);
+    ObjectFactory::instance().addObject(blueMonk);
+
+    std::shared_ptr<GameObject> greenInn = ObjectFactory::instance().createObject("media/Objects/GreenINN.xml");
+    greenInn->setLayer(3);
+    ObjectFactory::instance().addObject(greenInn);
+    SquareGrid::Location greenInnPos {greenInn->getComponent<BodyComponent>()->getPosition().x / 3,
+                                      greenInn->getComponent<BodyComponent>()->getPosition().y / 3};
+
+    std::shared_ptr<GameObject> greenMonk = ObjectFactory::instance().createObject("media/Objects/GreenMonk.xml");
+    greenMonk->setLayer(3);
+    ObjectFactory::instance().addObject(greenMonk);
+
+    generateRoad(redInnPos, blueInnPos);
+    generateRoad(blueInnPos, greenInnPos);
+    generateRoad(greenInnPos, redInnPos);
 
     m_layerOneSpriteBatch.init();
     m_layerOneSpriteBatch.begin();
@@ -67,10 +110,12 @@ void Map::generateMap()
             if (sM == BIOME::WATER)
             {
                 generateWater(posVec, tile);
-            } else
+            }
+            else
             {
                 int index = calculateTileIndex(sTL, sT, sTR, sL, sR, sBL, sB, sBR,
-                                               static_cast<BIOME>(static_cast<int>(sM) - 1));
+                                                   static_cast<BIOME>(static_cast<int>(sM) - 1));
+
                 int startTile = (992 - static_cast<int>(sM) * 32);
                 m_layerOneSpriteBatch.draw(
                         posVec,
@@ -107,7 +152,7 @@ void Map::generateMap()
                     // EMPTY
                     break;
                 case BIOME::FOREST:
-                    if (chance(m_rng) > 0.95f)
+                    if (chance(m_rng) > 0.95f  && (posVec.x < 430 || posVec.x > 470) && (posVec.y < 430 || posVec.y > 470)) // SHOULD BE ANOTHER FOR THAT CHECKS RESTRICTED AREAS FOR GENERATION
                     {
                         // Generate the tree
                         if (chance(m_rng) > 0.5f)
@@ -144,6 +189,8 @@ void Map::generateMap()
                     break;
                 case BIOME::SNOW:
                     // EMPTY
+                    break;
+                case BIOME::ROAD:
                     break;
             }
         }
@@ -234,12 +281,13 @@ double Map::noise(double nx, double ny)
 
 BIOME Map::biome(double val)
 {
-    if (val < 0.35) return BIOME::WATER;
-    else if (val < 0.40) return BIOME::BEACH;
-    else if (val < 0.55) return BIOME::FOREST;
-    else if (val < 0.65) return BIOME::JUNGLE;
-    else if (val < 0.75) return BIOME::SAVANNAH;
-    else if (val < 0.85) return BIOME::ROCKS;
+    if (val == -1) return BIOME::ROAD;
+    else if (val <= 0.15) return BIOME::WATER; //35
+    else if (val <= 0.25) return BIOME::BEACH; //40
+    else if (val <= 0.55) return BIOME::FOREST; //55
+    else if (val <= 0.65) return BIOME::JUNGLE; //65
+    else if (val <= 0.75) return BIOME::SAVANNAH; //75
+    else if (val <= 0.85) return BIOME::ROCKS; //85
     else return BIOME::SNOW;
 }
 
@@ -297,6 +345,21 @@ Map::calculateTileIndex(BIOME sTL, BIOME sT, BIOME sTR, BIOME sL, BIOME sR, BIOM
         }
     }
     return index;
+}
+
+void Map::generateRoad(SquareGrid::Location start, SquareGrid::Location goal)
+{
+    unordered_map<SquareGrid::Location, SquareGrid::Location> came_from;
+    unordered_map<SquareGrid::Location, double> cost_so_far;
+    a_star_search(m_grid, start, goal, came_from, cost_so_far);
+
+    vector<SquareGrid::Location> path = reconstruct_path(start, goal, came_from);
+
+    for (auto itr = path.begin(); itr != path.end(); itr++)
+    {
+        m_value[std::get<1>(*itr)][std::get<0>(*itr)] = -1;
+
+    }
 }
 
 

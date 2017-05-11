@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ImGUI/imgui.h>
 #include "PlayerInputComponent.h"
 
 void PlayerInputComponent::init(tinyxml2::XMLNode *pNode)
@@ -49,7 +50,7 @@ void PlayerInputComponent::update(GameObject *obj, float deltaTime)
     b2Body *body = obj->getComponent<BodyComponent>()->getBody();
     b2Vec2 movementSpeed(0.0f, 0.0f);
 
-    if (Falcon::InputManager::instance().isKeyDown(m_leftKeyID))
+    if (ImGui::IsKeyDown(m_leftKeyID))
     {
         movementSpeed.x += -1;
 
@@ -66,7 +67,7 @@ void PlayerInputComponent::update(GameObject *obj, float deltaTime)
             obj->setDirection(DIRECTION::LEFT);
         }
 
-    } else if (Falcon::InputManager::instance().isKeyDown(m_rightKeyID))
+    } else if (ImGui::IsKeyDown(m_rightKeyID))
     {
         movementSpeed.x += 1;
         if (obj->getDirection() == DIRECTION::DOWN)
@@ -83,7 +84,7 @@ void PlayerInputComponent::update(GameObject *obj, float deltaTime)
         }
     }
 
-    if (Falcon::InputManager::instance().isKeyDown(m_upKeyID))
+    if (ImGui::IsKeyDown(m_upKeyID))
     {
         movementSpeed.y += 1;
 
@@ -97,7 +98,7 @@ void PlayerInputComponent::update(GameObject *obj, float deltaTime)
         {
             obj->setDirection(DIRECTION::UP);
         }
-    } else if (Falcon::InputManager::instance().isKeyDown(m_downKeyID))
+    } else if (ImGui::IsKeyDown(m_downKeyID))
     {
         movementSpeed.y += -1;
         if (obj->getDirection() == DIRECTION::LEFT)

@@ -26,8 +26,8 @@
     </SpriteComponent>
 
     <InteractiveComponent>
-        <Font size="12">media/Fonts/pixel_font.ttf</Font>
-        <Text scale="0.125">F: PICK UP</Text>
+        <Font size="16">media/Fonts/alagard.ttf</Font>
+        <Text scale="0.1">F: Pick Up</Text>
         <Color r="255" g="255" b="255" a="255"/>
         <InteractionKey>f</InteractionKey>
         <InteractionType>Pickup</InteractionType>

@@ -23,7 +23,7 @@
     </SensorComponent>
 
     <PlayerInputComponent>
-        <MovementSpeed>20.0f</MovementSpeed>
+        <MovementSpeed>100.0f</MovementSpeed> <!-- should be 20.0f !-->
         <LeftKeyID>a</LeftKeyID>
         <RightKeyID>d</RightKeyID>
         <UpKeyID>w</UpKeyID>
@@ -42,7 +42,7 @@
     </DirectionalAnimationComponent>
 
     <HumanAIComponent>
-        <Font size="12">media/Fonts/pixel_font.ttf</Font>
+        <Font size="16">media/Fonts/alagard.ttf</Font>
     </HumanAIComponent>
 
     <InventoryComponent>

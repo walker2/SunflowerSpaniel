@@ -135,7 +135,7 @@ void GameplayScreen::update(float deltaTime)
     }
 
     //TODO: FOR TESTING ONLY, SHOULD BE REPLACED IN INPUT COMPONENT CODE
-    if (Falcon::InputManager::instance().isKeyPressed(SDLK_TAB))
+    if (ImGui::IsKeyPressed(SDLK_TAB, false))
     {
         if (m_currentPlayer == m_humanPlayer)
         {
@@ -157,7 +157,8 @@ void GameplayScreen::update(float deltaTime)
         ObjectFactory::instance().setCurrentPlayerID(m_currentPlayer->getID());
         m_showInventory = false;
     }
-    if (Falcon::InputManager::instance().isKeyPressed(SDLK_i))
+
+    if (ImGui::IsKeyPressed(SDLK_i, false))
     {
         m_showInventory = !m_showInventory;
     }

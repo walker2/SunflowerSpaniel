@@ -30,10 +30,18 @@ public:
     { return m_fatigue; }
 
     void decreaseThirst(float amount)
-    { m_thirst -= amount; if (m_thirst < 0) m_thirst = 0; }
+    {
+        if (m_thirst > 1) m_thirst = 1;
+        m_thirst -= amount;
+        if (m_thirst < 0) m_thirst = 0;
+    }
 
     void decreaseHunger(float amount)
-    { m_hunger -= amount; if (m_hunger < 0) m_hunger = 0; }
+    {
+        if (m_hunger > 1) m_hunger = 1;
+        m_hunger -= amount;
+        if (m_hunger < 0) m_hunger = 0;
+    }
 
     void decreaseFatigue()
     { m_fatigue -= 0.0001f; }

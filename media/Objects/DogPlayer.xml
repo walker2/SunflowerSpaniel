@@ -42,21 +42,11 @@
     </DirectionalAnimationComponent>
 
     <DogAIComponent>
-        <Font size="12">media/Fonts/pixel_font.ttf</Font>
+        <Font size="16">media/Fonts/alagard.ttf</Font>
     </DogAIComponent>
 
     <InventoryComponent>
 
     </InventoryComponent>
-</Object>
 
-        <!-- <DirectionalAnimationComponent>
-                <Texture tileSize="32">media/Textures/Wolfpack.png</Texture>
-                <Color r="255" g="255" b="255" a="255"/>
-                <Dimensions height="4" width="4"/>
-                <Position x="0" y="1"/>
-                <SpriteID left="56" right="48" up="32" down="40">56</SpriteID>
-                <AnimationSpeed>0.1</AnimationSpeed>
-                <FrameCount>4</FrameCount>
-            </DirectionalAnimationComponent>
-            -->
+</Object>

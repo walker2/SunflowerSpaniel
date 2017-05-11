@@ -11,12 +11,12 @@ void LayDownAndRest::execute(DogAIComponent *object)
 {
     if (object->getFatigue() <= 0.0f)
     {
-        object->printMessage("*** DOG IS READY FOR A GOOD HUNT ***");
+        object->printMessage("Is ready for a good hunt");
         object->getFSM()->changeState(SniffOutThePrey::instance());
     } else
     {
         object->decreaseFatigue();
-        object->printMessage("*** DREAMS ABOUT SHEEPS ***");
+        object->printMessage("Dreams about sheeps");
     }
 }
 
@@ -40,22 +40,22 @@ void SniffOutThePrey::enter(DogAIComponent *object)
 void SniffOutThePrey::execute(DogAIComponent *object)
 {
     object->increaseFatigue();
-    object->printMessage("*** DOG IS SEEKING FOR A NEW PREY ***");
+    object->printMessage("Scouting the area");
 
     if(object->isThirsty())
     {
-        object->printMessage("*** DOG WANTS TO DRINK ***");
+        object->printMessage("Wants to drink");
         //CHANGE STATE
     }
 
     if(object->isHungry())
     {
-        object->printMessage("*** DOG WANTS TO EAT ***");
+        object->printMessage("Wants to eat");
         //CHANGE STATE
     }
     if(object->isFatigued())
     {
-        object->printMessage("*** DOG LAYS DOWN TO SLEEP ***");
+        object->printMessage("Lays down to sleep");
         object->getFSM()->changeState(LayDownAndRest::instance());
     }
 }
