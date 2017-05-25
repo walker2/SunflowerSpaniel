@@ -41,6 +41,7 @@ void SniffOutThePrey::execute(DogAIComponent *object)
 {
     object->increaseFatigue();
     object->printMessage("Scouting the area");
+    object->moveToTheHuman();
 
     if(object->isThirsty())
     {

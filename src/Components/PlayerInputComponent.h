@@ -22,6 +22,9 @@ public:
     void enable(bool enable)
     { m_isEnabled = enable; }
 
+    bool isEnabled()
+    { return m_isEnabled; }
+
 private:
     float m_movementSpeed = 20.0f;
     unsigned int m_leftKeyID = 0;

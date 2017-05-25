@@ -2,6 +2,7 @@
 #include "../Components/DogAIComponent.h"
 #include "../Components/InventoryComponent.h"
 #include "../Components/HumanAIComponent.h"
+#include "../Components/DialogueComponent.h"
 
 
 std::shared_ptr<GameObject> ObjectFactory::createObject(const char *objectResource)
@@ -95,6 +96,10 @@ void ObjectFactory::addComponent(std::shared_ptr<GameObject> obj, tinyxml2::XMLN
     {
         obj->attachComponent<InventoryComponent>(obj.get());
         obj->getComponent<InventoryComponent>()->init(pNode);
+    } else if (component == "DialogueComponent")
+    {
+        obj->attachComponent<DialogueComponent>(obj.get());
+        obj->getComponent<DialogueComponent>()->init(pNode);
     }
 
 
@@ -117,6 +122,7 @@ void ObjectFactory::drawGameObjects(Falcon::SpriteBatch &spriteBatch, float delt
             auto dogAIComponent = object->getComponent<DogAIComponent>();
             auto humanAIComponent = object->getComponent<HumanAIComponent>();
             auto inventoryComponent = object->getComponent<InventoryComponent>();
+            auto dialogueComponent = object->getComponent<DialogueComponent>();
 
             if (!collisionComponent)
             {
@@ -159,6 +165,11 @@ void ObjectFactory::drawGameObjects(Falcon::SpriteBatch &spriteBatch, float delt
                 if (inventoryComponent)
                 {
                     inventoryComponent->draw(spriteBatch, deltaTime);
+                }
+
+                if (dialogueComponent)
+                {
+                    dialogueComponent->draw();
                 }
 
                 if (renderDebug)

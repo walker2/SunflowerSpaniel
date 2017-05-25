@@ -1,0 +1,37 @@
+<RedMonk>
+    <NodesNumber n="6"/>
+    <Node n="0">
+        <Text>Hello, my friend</Text>
+        <Option text="We are familiar?" result="continue" nextNode="2"/>
+        <Option text="Get lost" result="continue" nextNode="1"/>
+    </Node>
+
+    <Node n="1">
+        <Text>After all of we've been through...</Text>
+        <Option text="(exit dialogue)" result="exit" nextNode="none"/>
+    </Node>
+
+    <Node n="2">
+        <Text>Of course we are. Don't you remember?</Text>
+        <Option text="Oh, it's you, i can see now..." result="continue" nextNode="3"/>
+        <Option text="I'm sorry, but i can't remember anything" result="continue" nextNode="4"/>
+    </Node>
+
+    <Node n="3">
+        <Text>Who am I then?</Text>
+        <Option text="Father" result="exit" nextNode="none"/>
+        <Option text="Teacher" result="exit" nextNode="none"/>
+        <Option text="Uncle" result="exit" nextNode="none"/>
+    </Node>
+
+    <Node n="4">
+        <Text>I can help you, but you can help me too before. Bring me my gun, i lost it in nearby ruins</Text>
+        <Option text="Alright, i will help you" result="acceptquest" nextNode="5"/>
+        <Option text="I have a more important things to do" result="exit" nextNode="none"/>
+    </Node>
+
+    <Node n="5">
+        <Text>QUEST HAS STARTED</Text>
+        <Option text="(exit dialogue)" result="acceptquest" nextNode="none"/>
+    </Node>
+</RedMonk>

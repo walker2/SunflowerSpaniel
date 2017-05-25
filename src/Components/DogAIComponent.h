@@ -8,6 +8,8 @@
 #include "../ObjectFactory/GameObject.h"
 #include "../FSM/State.h"
 #include "NeedsComponent.h"
+#include "../ObjectFactory/ObjectFactory.h"
+#include <glm/vec2.hpp>
 
 struct Telegram;
 
@@ -29,6 +31,21 @@ public:
         m_thirst += 0.0004f * deltaTime;
         m_hunger += 0.00008f * deltaTime;
         m_manager->update();
+
+        if (m_shouldMove)
+        {
+            if (obj->getComponent<PlayerInputComponent>()->isEnabled())
+                return;
+
+            auto human = ObjectFactory::instance().getObjectFromID(ObjectFactory::instance().getHumanPlayerID());
+            if (human != nullptr)
+            {
+                m_direction = glm::normalize(human->getComponent<BodyComponent>()->getPosition() - m_position);
+                m_position += m_direction * 20.f * deltaTime;
+                body->SetTransform(b2Vec2(m_position.x, m_position.y), body->GetAngle());
+            }
+        }
+
     }
 
     void init(tinyxml2::XMLNode *pNode) override
@@ -59,12 +76,24 @@ public:
     std::shared_ptr<StateManager<DogAIComponent>> getFSM()
     { return  m_manager; }
 
+    void moveToTheHuman()
+    {
+        auto human = ObjectFactory::instance().getObjectFromID(ObjectFactory::instance().getHumanPlayerID());
+
+        glm::vec2 distVec = human->getComponent<BodyComponent>()->getPosition() - m_position;
+        float distance = glm::length(distVec);
+
+        m_shouldMove = distance > 50;
+    }
+
 
 private:
     std::shared_ptr<StateManager<DogAIComponent>> m_manager;
     Falcon::SpriteFont *m_spriteFont;
     std::string m_text = "";
     glm::vec2 m_position;
+    glm::vec2 m_direction;
+    bool m_shouldMove = false;
 };
 
 

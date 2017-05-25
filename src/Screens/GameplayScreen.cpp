@@ -135,7 +135,7 @@ void GameplayScreen::update(float deltaTime)
     }
 
     //TODO: FOR TESTING ONLY, SHOULD BE REPLACED IN INPUT COMPONENT CODE
-    if (ImGui::IsKeyPressed(SDLK_TAB, false))
+    if (ImGui::IsKeyPressed(SDLK_TAB, false) && m_currentPlayer->getComponent<PlayerInputComponent>()->isEnabled())
     {
         if (m_currentPlayer == m_humanPlayer)
         {
@@ -158,7 +158,7 @@ void GameplayScreen::update(float deltaTime)
         m_showInventory = false;
     }
 
-    if (ImGui::IsKeyPressed(SDLK_i, false))
+    if (ImGui::IsKeyPressed(SDLK_i, false) && m_currentPlayer->getComponent<PlayerInputComponent>()->isEnabled())
     {
         m_showInventory = !m_showInventory;
     }

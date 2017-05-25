@@ -7,6 +7,10 @@
 
 struct Telegram
 {
+    /** Messages can be dispatched immediately or delayed for a specified amount of time.
+    If a delay is necessary this field is stamped with the time the message should be dispatched.**/
+    double dispatchTime;
+
     /// ID of object who sent this telegram
     int sender;
 
@@ -16,10 +20,6 @@ struct Telegram
     /// ID of the message, that should be dispatched
     /// They are all enumerated in file Messages.h
     int msg;
-
-    /** Messages can be dispatched immediately or delayed for a specified amount of time.
-    If a delay is necessary this field is stamped with the time the message should be dispatched.**/
-    double dispatchTime;
 
     /// any additional information that may accompany the message
     void *extraInfo;

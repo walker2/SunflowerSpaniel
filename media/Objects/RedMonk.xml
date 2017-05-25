@@ -18,7 +18,7 @@
         <Texture>media/Textures/RedMonkSprite.png</Texture>
         <Color r="255" g="255" b="255" a="255"/>
         <Dimensions height="6" width="6"/>
-        <Position x="0" y="0"/>
+        <Position x="0" y="1"/>
         <SpriteID>0</SpriteID>
     </SpriteComponent>
 
@@ -33,5 +33,9 @@
     <SpawnObjectComponent>
 
     </SpawnObjectComponent>
+
+    <DialogueComponent>
+        <FilePath>media/Dialogues/RedMonk.xml</FilePath>
+    </DialogueComponent>
 
 </Object>
