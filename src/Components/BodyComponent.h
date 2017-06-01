@@ -11,7 +11,7 @@
 class BodyComponent : public Component
 {
 public:
-    BodyComponent(GameObject* obj) : Component(obj)
+    BodyComponent(GameObject *obj) : Component(obj)
     {}
 
     void init(tinyxml2::XMLNode *pNode) override;

@@ -3,7 +3,6 @@
 #include "ScreenIndices.h"
 #include "Falcon/GameIntefaces/IMainGame.h"
 #include "../ObjectFactory/ObjectFactory.h"
-#include "../Components/AnimationComponent.h"
 
 MainMenuScreen::MainMenuScreen(Falcon::Window *window)
         : m_window(window)

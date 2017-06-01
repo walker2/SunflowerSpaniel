@@ -3,7 +3,6 @@
 #include "ScreenIndices.h"
 
 #include "../Messaging/ContactListener.h"
-#include "../Components/DogAIComponent.h"
 
 ContactListener listener;
 
@@ -82,7 +81,7 @@ void GameplayScreen::onEntry()
 
 void GameplayScreen::onExit()
 {
-    //m_gameObjects->clear();
+    ObjectFactory::instance().dispose();
     m_map.dispose();
 }
 
@@ -144,8 +143,7 @@ void GameplayScreen::update(float deltaTime)
             m_humanPlayer->getComponent<SensorComponent>()->enable(false);
             m_dogPlayer->getComponent<SensorComponent>()->enable(true);
             m_currentPlayer = m_dogPlayer;
-        }
-        else if (m_currentPlayer == m_dogPlayer)
+        } else if (m_currentPlayer == m_dogPlayer)
         {
             m_humanPlayer->getComponent<PlayerInputComponent>()->enable(true);
             m_dogPlayer->getComponent<PlayerInputComponent>()->enable(false);
@@ -231,7 +229,7 @@ void GameplayScreen::draw(float deltaTime)
     m_debugRender.render(projectionMatrix, 2.0f);
 
     m_debugGUI.begin();
-    m_debugGUI.draw(m_renderDebug, mouseLight,playerLight, m_camera, m_currentPlayer, m_time);
+    m_debugGUI.draw(m_renderDebug, mouseLight, playerLight, m_camera, m_currentPlayer, m_time);
     m_debugGUI.end();
 
     if (m_showInventory)
@@ -240,8 +238,6 @@ void GameplayScreen::draw(float deltaTime)
         m_inventoryGUI.draw(m_currentPlayer);
         m_debugGUI.end();
     }
-
-    ImGui::ShowTestWindow();
     ImGui::Render();
 }
 

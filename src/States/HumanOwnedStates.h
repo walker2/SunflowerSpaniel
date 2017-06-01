@@ -1,9 +1,12 @@
 #ifndef SUNFLOWERSPANIEL_HUMANOWNEDSTATES_H
 #define SUNFLOWERSPANIEL_HUMANOWNEDSTATES_H
+
 #include "../FSM/State.h"
 
 class HumanAIComponent;
+
 struct Telegram;
+
 class Sleep : public State<HumanAIComponent>
 {
 public:
@@ -25,8 +28,10 @@ public:
 private:
     Sleep()
     {}
-    Sleep(const Sleep&);
-    Sleep& operator=(const Sleep&);
+
+    Sleep(const Sleep &);
+
+    Sleep &operator=(const Sleep &);
 };
 
 
@@ -51,8 +56,10 @@ public:
 private:
     Hunt()
     {}
-    Hunt(const Hunt&);
-    Hunt& operator=(const Hunt&);
+
+    Hunt(const Hunt &);
+
+    Hunt &operator=(const Hunt &);
 };
 
 

@@ -3,7 +3,8 @@
 #include "../ObjectFactory/ObjectFactory.h"
 #include "Map.h"
 
-GridWithWeights make_diagram_for_play_field() {
+GridWithWeights make_diagram_for_play_field()
+{
     GridWithWeights grid(200, 200);
     add_rect(grid, 1, 7, 4, 9);
     return grid;
@@ -54,8 +55,8 @@ void Map::generateMap()
     std::shared_ptr<GameObject> redInn = ObjectFactory::instance().createObject("media/Objects/RedINN.xml");
     redInn->setLayer(3);
     ObjectFactory::instance().addObject(redInn);
-    SquareGrid::Location redInnPos {redInn->getComponent<BodyComponent>()->getPosition().x / 3,
-                                    redInn->getComponent<BodyComponent>()->getPosition().y / 3};
+    SquareGrid::Location redInnPos{redInn->getComponent<BodyComponent>()->getPosition().x / 3,
+                                   redInn->getComponent<BodyComponent>()->getPosition().y / 3};
 
     std::shared_ptr<GameObject> redMonk = ObjectFactory::instance().createObject("media/Objects/RedMonk.xml");
     redMonk->setLayer(3);
@@ -64,8 +65,8 @@ void Map::generateMap()
     std::shared_ptr<GameObject> blueInn = ObjectFactory::instance().createObject("media/Objects/BlueINN.xml");
     blueInn->setLayer(3);
     ObjectFactory::instance().addObject(blueInn);
-    SquareGrid::Location blueInnPos {blueInn->getComponent<BodyComponent>()->getPosition().x / 3,
-                                     blueInn->getComponent<BodyComponent>()->getPosition().y / 3};
+    SquareGrid::Location blueInnPos{blueInn->getComponent<BodyComponent>()->getPosition().x / 3,
+                                    blueInn->getComponent<BodyComponent>()->getPosition().y / 3};
 
     std::shared_ptr<GameObject> blueMonk = ObjectFactory::instance().createObject("media/Objects/BlueMonk.xml");
     blueMonk->setLayer(3);
@@ -74,8 +75,8 @@ void Map::generateMap()
     std::shared_ptr<GameObject> greenInn = ObjectFactory::instance().createObject("media/Objects/GreenINN.xml");
     greenInn->setLayer(3);
     ObjectFactory::instance().addObject(greenInn);
-    SquareGrid::Location greenInnPos {greenInn->getComponent<BodyComponent>()->getPosition().x / 3,
-                                      greenInn->getComponent<BodyComponent>()->getPosition().y / 3};
+    SquareGrid::Location greenInnPos{greenInn->getComponent<BodyComponent>()->getPosition().x / 3,
+                                     greenInn->getComponent<BodyComponent>()->getPosition().y / 3};
 
     std::shared_ptr<GameObject> greenMonk = ObjectFactory::instance().createObject("media/Objects/GreenMonk.xml");
     greenMonk->setLayer(3);
@@ -110,11 +111,10 @@ void Map::generateMap()
             if (sM == BIOME::WATER)
             {
                 generateWater(posVec, tile);
-            }
-            else
+            } else
             {
                 int index = calculateTileIndex(sTL, sT, sTR, sL, sR, sBL, sB, sBR,
-                                                   static_cast<BIOME>(static_cast<int>(sM) - 1));
+                                               static_cast<BIOME>(static_cast<int>(sM) - 1));
 
                 int startTile = (992 - static_cast<int>(sM) * 32);
                 m_layerOneSpriteBatch.draw(
@@ -152,7 +152,8 @@ void Map::generateMap()
                     // EMPTY
                     break;
                 case BIOME::FOREST:
-                    if (chance(m_rng) > 0.95f  && (posVec.x < 430 || posVec.x > 470) && (posVec.y < 430 || posVec.y > 470)) // SHOULD BE ANOTHER FOR THAT CHECKS RESTRICTED AREAS FOR GENERATION
+                    if (chance(m_rng) > 0.95f && (posVec.x < 430 || posVec.x > 470) && (posVec.y < 430 || posVec.y >
+                                                                                                          470)) // SHOULD BE ANOTHER FOR THAT CHECKS RESTRICTED AREAS FOR GENERATION
                     {
                         // Generate the tree
                         if (chance(m_rng) > 0.5f)

@@ -20,7 +20,7 @@ private:
 
 private:
     glm::vec2 m_position;
-    int m_number = 3;
+    std::string m_objectFilePath;
 };
 
 

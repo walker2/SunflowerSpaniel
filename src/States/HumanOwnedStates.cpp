@@ -2,7 +2,7 @@
 #include "../Components/HumanAIComponent.h"
 
 // SLEEP METHODS
-void Sleep::enter(HumanAIComponent *object)
+void Sleep::enter(HumanAIComponent */*object*/)
 {
 
 }
@@ -20,19 +20,19 @@ void Sleep::execute(HumanAIComponent *object)
     }
 }
 
-void Sleep::exit(HumanAIComponent *object)
+void Sleep::exit(HumanAIComponent */*object*/)
 {
 
 }
 
-bool Sleep::onMessage(HumanAIComponent *object, const Telegram &telegram)
+bool Sleep::onMessage(HumanAIComponent */*object*/, const Telegram &/*telegram*/)
 {
     return true;
 }
 
 
 // HUNT METHODS
-void Hunt::enter(HumanAIComponent *object)
+void Hunt::enter(HumanAIComponent */*object*/)
 {
 
 }
@@ -42,30 +42,30 @@ void Hunt::execute(HumanAIComponent *object)
     object->increaseFatigue();
     object->printMessage("...");
 
-    if(object->isThirsty())
+    if (object->isThirsty())
     {
         object->printMessage("Kinda thirsty");
         //CHANGE STATE
     }
 
-    if(object->isHungry())
+    if (object->isHungry())
     {
         object->printMessage("Stomach is grumbling about");
         //CHANGE STATE
     }
-    if(object->isFatigued())
+    if (object->isFatigued())
     {
         object->printMessage("What a beautiful time to sleep");
         object->getFSM()->changeState(Sleep::instance());
     }
 }
 
-void Hunt::exit(HumanAIComponent *object)
+void Hunt::exit(HumanAIComponent */*object*/)
 {
 
 }
 
-bool Hunt::onMessage(HumanAIComponent *object, const Telegram &telegram)
+bool Hunt::onMessage(HumanAIComponent */*object*/, const Telegram &/*telegram*/)
 {
     return true;
 }

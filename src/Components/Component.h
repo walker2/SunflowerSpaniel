@@ -10,7 +10,7 @@ class GameObject;
 class Component
 {
 public:
-    Component(GameObject* obj) : m_obj(obj)
+    Component(GameObject *obj) : m_obj(obj)
     {}
 
     virtual void update(GameObject *obj, float deltaTime) = 0;
@@ -23,11 +23,11 @@ public:
     virtual void destroy()
     {}
 
-    GameObject* getObject()
+    GameObject *getObject()
     { return m_obj; }
 
 protected:
-    GameObject* m_obj;
+    GameObject *m_obj;
 };
 
 

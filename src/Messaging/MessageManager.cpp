@@ -25,8 +25,7 @@ void MessageManager::dispatchMsg(double delay, int sender, int receiver, int msg
     {
         //send the telegram to the recipient
         discharge(pReceiver, telegram);
-    }
-    else
+    } else
     {
         //TODO: Should be implemented
 

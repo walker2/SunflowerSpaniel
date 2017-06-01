@@ -8,7 +8,7 @@
 class AnimationComponent : public Component
 {
 public:
-    AnimationComponent(GameObject* obj) : Component(obj)
+    AnimationComponent(GameObject *obj) : Component(obj)
     {}
 
     void init(tinyxml2::XMLNode *pNode) override;

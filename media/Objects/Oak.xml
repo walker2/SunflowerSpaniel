@@ -31,7 +31,7 @@
     </InteractiveComponent>
 
     <SpawnObjectComponent>
-
+        <Object>media/Objects/AppleFruit.xml</Object>
     </SpawnObjectComponent>
 
 </Object>

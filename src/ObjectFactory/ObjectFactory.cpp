@@ -28,7 +28,7 @@ std::shared_ptr<GameObject> ObjectFactory::createObject(const char *objectResour
     {
         addComponent(obj, pNode);
     }
-    m_gameObjectsMap.emplace(obj->getID(), obj);
+
     return obj;
 }
 
@@ -108,89 +108,106 @@ void ObjectFactory::addComponent(std::shared_ptr<GameObject> obj, tinyxml2::XMLN
 void ObjectFactory::drawGameObjects(Falcon::SpriteBatch &spriteBatch, float deltaTime, Falcon::Camera2D &camera,
                                     Falcon::DebugRenderer &debugRender, bool renderDebug)
 {
-    for (unsigned long i = 0; i < m_layerGameObjects.size(); i++)
+    std::multimap<float, std::shared_ptr<GameObject>, std::greater<float>> drawOrder;
+
+    for (auto object : m_gameObjectsMap)
     {
         spriteBatch.begin();
-        for (auto object : m_layerGameObjects[i])
+        auto spriteComponent = object.second->getComponent<SpriteComponent>();
+        auto animationComponent = object.second->getComponent<AnimationComponent>();
+        auto collisionComponent = object.second->getComponent<CollisionComponent>();
+        auto bodyComponent = object.second->getComponent<BodyComponent>();
+        auto sensorComponent = object.second->getComponent<SensorComponent>();
+
+        if (!collisionComponent)
         {
-            auto spriteComponent = object->getComponent<SpriteComponent>();
-            auto animationComponent = object->getComponent<AnimationComponent>();
-            auto collisionComponent = object->getComponent<CollisionComponent>();
-            auto bodyComponent = object->getComponent<BodyComponent>();
-            auto sensorComponent = object->getComponent<SensorComponent>();
-            auto interactiveComponent = object->getComponent<InteractiveComponent>();
-            auto dogAIComponent = object->getComponent<DogAIComponent>();
-            auto humanAIComponent = object->getComponent<HumanAIComponent>();
-            auto inventoryComponent = object->getComponent<InventoryComponent>();
-            auto dialogueComponent = object->getComponent<DialogueComponent>();
-
-            if (!collisionComponent)
+            if (spriteComponent)
             {
-                if (spriteComponent)
-                {
-                    spriteComponent->draw(spriteBatch);
-                }
+                spriteComponent->draw(spriteBatch);
+            }
 
-                if (animationComponent)
-                {
-                    animationComponent->draw(spriteBatch, deltaTime);
-                }
-            } else if (camera.isBoxVisible(bodyComponent->getPosition(), collisionComponent->getDimensions()))
+            if (animationComponent)
             {
-                if (spriteComponent)
+                animationComponent->draw(spriteBatch, deltaTime);
+            }
+        } else if (camera.isBoxVisible(bodyComponent->getPosition(), glm::vec2(0, 0)))
+        {
+            // IF VISIBLE DRAW IN SPECIFIC ORDER
+            drawOrder.emplace(bodyComponent->getPosition().y, object.second);
+        }
+
+
+        spriteBatch.end();
+        spriteBatch.renderBatch();
+    }
+
+    for (auto object : drawOrder)
+    {
+        spriteBatch.begin();
+        auto spriteComponent = object.second->getComponent<SpriteComponent>();
+        auto animationComponent = object.second->getComponent<AnimationComponent>();
+        auto collisionComponent = object.second->getComponent<CollisionComponent>();
+        auto bodyComponent = object.second->getComponent<BodyComponent>();
+        auto sensorComponent = object.second->getComponent<SensorComponent>();
+        auto interactiveComponent = object.second->getComponent<InteractiveComponent>();
+        auto dogAIComponent = object.second->getComponent<DogAIComponent>();
+        auto humanAIComponent = object.second->getComponent<HumanAIComponent>();
+        auto inventoryComponent = object.second->getComponent<InventoryComponent>();
+        auto dialogueComponent = object.second->getComponent<DialogueComponent>();
+
+
+        if (spriteComponent)
+        {
+            spriteComponent->draw(spriteBatch);
+        }
+
+        if (animationComponent)
+        {
+            animationComponent->draw(spriteBatch, deltaTime);
+        }
+
+        if (interactiveComponent)
+        {
+            interactiveComponent->draw(spriteBatch, deltaTime);
+        }
+
+        if (dogAIComponent)
+        {
+            dogAIComponent->draw(spriteBatch, deltaTime);
+        }
+
+        if (humanAIComponent)
+        {
+            humanAIComponent->draw(spriteBatch, deltaTime);
+        }
+
+        if (inventoryComponent)
+        {
+            inventoryComponent->draw(spriteBatch, deltaTime);
+        }
+
+        if (dialogueComponent)
+        {
+            dialogueComponent->draw();
+        }
+
+        if (renderDebug)
+        {
+            if (collisionComponent)
+            {
+                if (bodyComponent->getBody()->GetType() == b2_dynamicBody)
                 {
-                    spriteComponent->draw(spriteBatch);
-                }
-
-                if (animationComponent)
+                    collisionComponent->drawDebug(debugRender, Falcon::Color(255, 0, 255, 255));
+                } else
                 {
-                    animationComponent->draw(spriteBatch, deltaTime);
+
+                    collisionComponent->drawDebug(debugRender, Falcon::Color(255, 255, 0, 255));
                 }
+            }
 
-                if (interactiveComponent)
-                {
-                    interactiveComponent->draw(spriteBatch, deltaTime);
-                }
-
-                if (dogAIComponent)
-                {
-                    dogAIComponent->draw(spriteBatch, deltaTime);
-                }
-
-                if (humanAIComponent)
-                {
-                    humanAIComponent->draw(spriteBatch, deltaTime);
-                }
-
-                if (inventoryComponent)
-                {
-                    inventoryComponent->draw(spriteBatch, deltaTime);
-                }
-
-                if (dialogueComponent)
-                {
-                    dialogueComponent->draw();
-                }
-
-                if (renderDebug)
-                {
-                    if (collisionComponent)
-                    {
-                        if (bodyComponent->getBody()->GetType() == b2_dynamicBody)
-                        {
-                            collisionComponent->drawDebug(debugRender, Falcon::Color(255, 0, 255, 255));
-                        } else
-                        {
-
-                            collisionComponent->drawDebug(debugRender, Falcon::Color(255, 255, 0, 255));
-                        }
-                    }
-
-                    if (sensorComponent)
-                    {
-                        sensorComponent->drawDebug(debugRender, Falcon::Color(0, 255, 0, 255));
-                    }
-                }
+            if (sensorComponent)
+            {
+                sensorComponent->drawDebug(debugRender, Falcon::Color(0, 255, 0, 255));
             }
         }
         spriteBatch.end();
@@ -200,36 +217,18 @@ void ObjectFactory::drawGameObjects(Falcon::SpriteBatch &spriteBatch, float delt
 
 void ObjectFactory::updateGameObjects(float deltaTime)
 {
-    for (unsigned long i = 0; i < m_layerGameObjects.size(); i++)
+    for (auto object : m_gameObjectsMap)
     {
-        for (auto object : m_layerGameObjects[i])
+        if (!object.second->isDestroyed())
         {
-            if (!object->isDestroyed())
-            {
-                object->update(deltaTime);
-            }
+            object.second->update(deltaTime);
         }
     }
 }
 
 void ObjectFactory::addObject(std::shared_ptr<GameObject> object)
 {
-    switch (object->getLayer())
-    {
-        case 0:
-            m_layerGameObjects[0].push_back(object);
-            break;
-        case 1:
-            m_layerGameObjects[1].push_back(object);
-            break;
-        case 2:
-            m_layerGameObjects[2].push_back(object);
-            break;
-        case 3:
-            m_layerGameObjects[3].push_back(object);
-            break;
-        default:break;
-    }
+    m_gameObjectsMap.emplace(object->getID(), object);
 }
 
 void ObjectFactory::deleteObject(GameObject *obj)

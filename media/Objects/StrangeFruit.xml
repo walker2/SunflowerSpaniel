@@ -1,13 +1,16 @@
-<Object>
+<AppleFruit>
+    <NameComponent>
+        <Name>Strange Fruit</Name>
+    </NameComponent>
     <BodyComponent>
         <Position x="0" y="0"/>
-        <BodyType>Static</BodyType>
-        <FixedRotation>false</FixedRotation>
+        <BodyType>Dynamic</BodyType>
+        <FixedRotation>true</FixedRotation>
         <LinearDamping>2</LinearDamping>
     </BodyComponent>
 
     <CollisionComponent>
-        <Dimensions height="2.5" width="2.5"/>
+        <Dimensions height="1.5" width="1.5"/>
         <Shape name="Circle">
             <Density>1.0f</Density>
             <Friction>0.3f</Friction>
@@ -15,22 +18,18 @@
     </CollisionComponent>
 
     <SpriteComponent>
-        <Texture>media/Textures/Evergreen.png</Texture>
+        <Texture>media/Textures/StrangeFruit.png</Texture>
         <Color r="255" g="255" b="255" a="255"/>
-        <Dimensions height="16" width="9.6"/>
-        <Position x="0" y="4"/>
+        <Dimensions height="2" width="2"/>
+        <Position x="0" y="0"/>
         <SpriteID>0</SpriteID>
     </SpriteComponent>
 
     <InteractiveComponent>
         <Font size="16">media/Fonts/alagard.ttf</Font>
-        <Text scale="0.1">E: Interact</Text>
+        <Text scale="0.1">F: Pick Up</Text>
         <Color r="255" g="255" b="255" a="255"/>
-        <InteractionKey>e</InteractionKey>
-        <InteractionType>Spawn</InteractionType>
+        <InteractionKey>f</InteractionKey>
+        <InteractionType>Pickup</InteractionType>
     </InteractiveComponent>
-
-    <SpawnObjectComponent>
-        <Object>media/Objects/StrangeFruit.xml</Object>
-    </SpawnObjectComponent>
-</Object>
+</AppleFruit>

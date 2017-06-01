@@ -10,9 +10,14 @@ void SpawnObjectComponent::update(GameObject *obj, float /*deltaTime*/)
     m_position.y = body->GetPosition().y;
 }
 
-void SpawnObjectComponent::init(tinyxml2::XMLNode */*pNode*/)
+void SpawnObjectComponent::init(tinyxml2::XMLNode *pNode)
 {
-    // TODO: PARSE
+    tinyxml2::XMLElement *pTextureElement = pNode->FirstChildElement("Object");
+
+    if (pTextureElement)
+    {
+        m_objectFilePath = pTextureElement->GetText();
+    }
 }
 
 void SpawnObjectComponent::handleMessage(const Telegram &message)
@@ -30,7 +35,7 @@ void SpawnObjectComponent::spawnObject()
     std::uniform_real_distribution<float> y_dist(2.5, 5.0f);
     for (int i = 0; i < 5; i++)
     {
-        auto circle = ObjectFactory::instance().createObject("media/Objects/AppleFruit.xml");
+        auto circle = ObjectFactory::instance().createObject(m_objectFilePath.c_str());
         circle->getComponent<BodyComponent>()->setPosition(m_position + glm::vec2(x_dist(rng), y_dist(rng)));
         circle->setLayer(1);
         ObjectFactory::instance().addObject(circle);

@@ -4,6 +4,7 @@
 #include "../FSM/State.h"
 
 class DogAIComponent;
+
 struct Telegram;
 
 class LayDownAndRest : public State<DogAIComponent>
@@ -27,8 +28,10 @@ public:
 private:
     LayDownAndRest()
     {}
-    LayDownAndRest(const LayDownAndRest&);
-    LayDownAndRest& operator=(const LayDownAndRest&);
+
+    LayDownAndRest(const LayDownAndRest &);
+
+    LayDownAndRest &operator=(const LayDownAndRest &);
 };
 
 
@@ -53,8 +56,10 @@ public:
 private:
     SniffOutThePrey()
     {}
-    SniffOutThePrey(const SniffOutThePrey&);
-    SniffOutThePrey& operator=(const SniffOutThePrey&);
+
+    SniffOutThePrey(const SniffOutThePrey &);
+
+    SniffOutThePrey &operator=(const SniffOutThePrey &);
 };
 
 #endif

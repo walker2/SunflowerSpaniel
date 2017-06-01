@@ -2,7 +2,7 @@
 #include "../Components/DogAIComponent.h"
 
 // LAYDOWN METHODS
-void LayDownAndRest::enter(DogAIComponent *object)
+void LayDownAndRest::enter(DogAIComponent */*object*/)
 {
 
 }
@@ -20,19 +20,19 @@ void LayDownAndRest::execute(DogAIComponent *object)
     }
 }
 
-void LayDownAndRest::exit(DogAIComponent *object)
+void LayDownAndRest::exit(DogAIComponent */*object*/)
 {
 
 }
 
-bool LayDownAndRest::onMessage(DogAIComponent *object, const Telegram &telegram)
+bool LayDownAndRest::onMessage(DogAIComponent */*object*/, const Telegram &/*telegram*/)
 {
     return true;
 }
 
 
 // SNIFFOUTTHEPREY METHODS
-void SniffOutThePrey::enter(DogAIComponent *object)
+void SniffOutThePrey::enter(DogAIComponent */*object*/)
 {
 
 }
@@ -43,30 +43,30 @@ void SniffOutThePrey::execute(DogAIComponent *object)
     object->printMessage("Scouting the area");
     object->moveToTheHuman();
 
-    if(object->isThirsty())
+    if (object->isThirsty())
     {
         object->printMessage("Wants to drink");
         //CHANGE STATE
     }
 
-    if(object->isHungry())
+    if (object->isHungry())
     {
         object->printMessage("Wants to eat");
         //CHANGE STATE
     }
-    if(object->isFatigued())
+    if (object->isFatigued())
     {
         object->printMessage("Lays down to sleep");
         object->getFSM()->changeState(LayDownAndRest::instance());
     }
 }
 
-void SniffOutThePrey::exit(DogAIComponent *object)
+void SniffOutThePrey::exit(DogAIComponent */*object*/)
 {
 
 }
 
-bool SniffOutThePrey::onMessage(DogAIComponent *object, const Telegram &telegram)
+bool SniffOutThePrey::onMessage(DogAIComponent */*object*/, const Telegram &/*telegram*/)
 {
     return true;
 }

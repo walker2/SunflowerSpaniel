@@ -12,6 +12,7 @@
 #include "../Components/SpawnObjectComponent.h"
 #include "../Components/PlayerInputComponent.h"
 #include "../Components/InteractiveComponent.h"
+
 /**
  * A class for creating new GameObjects from xml source
  */
@@ -47,22 +48,26 @@ public:
 
     void drawGameObjects(Falcon::SpriteBatch &spriteBatch, float deltaTime,
                          Falcon::Camera2D &camera, Falcon::DebugRenderer &debugRender, bool renderDebug);
+
     void updateGameObjects(float deltaTime);
 
     void addObject(std::shared_ptr<GameObject> object);
 
-    void deleteObject(GameObject* obj);
+    void deleteObject(GameObject *obj);
 
     void deleteGameObjects();
 
-    long int getNumberOfGameObjectsOnLayer(int layer)
-    { return m_layerGameObjects[layer].size(); }
+    void dispose()
+    { m_gameObjectsMap.clear(); }
+
+    long int getNumberOfGameObjects()
+    { return m_gameObjectsMap.size(); }
 
     std::shared_ptr<GameObject> getObjectFromID(int id)
     {
         std::map<int, std::shared_ptr<GameObject>>::const_iterator ent = m_gameObjectsMap.find(id);
 
-        assert ( (ent !=  m_gameObjectsMap.end()) && "<EntityManager::GetEntityFromID>: invalid ID");
+        assert ((ent != m_gameObjectsMap.end()) && "<EntityManager::GetEntityFromID>: invalid ID");
 
         return ent->second;
     }
@@ -93,7 +98,7 @@ private:
         return m_lastObjectID;
     }
 
-    unsigned long m_lastObjectID;
+    unsigned long m_lastObjectID = 0;
     b2World *m_world;
     int m_dogPlayerID;
     int m_humanPlayerID;
@@ -102,11 +107,12 @@ private:
 private:
     ObjectFactory()
     {
-        m_layerGameObjects.resize(100);
+        //m_layerGameObjects.resize(100);
     }
-    std::vector<std::vector<std::shared_ptr<GameObject>>> m_layerGameObjects;   ///< Matrix for layered rendering
+
+    //std::vector<std::vector<std::shared_ptr<GameObject>>> m_layerGameObjects;   ///< Matrix for layered rendering
     std::map<int, std::shared_ptr<GameObject>> m_gameObjectsMap; ///< Map for fast lookup speeds for messaging
-    std::vector<GameObject*> m_deletedGameObjects;  ///< Vector of gameObjects that should be deleted on the next frame
+    std::vector<GameObject *> m_deletedGameObjects;  ///< Vector of gameObjects that should be deleted on the next frame
 };
 
 
