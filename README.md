@@ -15,3 +15,5 @@ sudo apt-get install libsdl2-dev libsdl2-ttf-dev libsdl2-mixer-dev libglew-dev l
 cmake CMakeLists.txt
 make
 ```
+### Screenshots
+![Alt text](/screenshots/sp1.gif?raw=true "Optional Title")
