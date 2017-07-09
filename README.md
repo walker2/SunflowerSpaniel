@@ -16,4 +16,9 @@ cmake CMakeLists.txt
 make
 ```
 ### Screenshots
-![Alt text](/screenshots/sp1.gif?raw=true "Optional Title")
+
+![Alt text](/screenshots/sp1.gif?raw=true)
+![Alt text](/screenshots/sp2.gif?raw=true)
+![Alt text](/screenshots/sp3.gif?raw=true)
+![Alt text](/screenshots/sp4.gif?raw=true)
+
